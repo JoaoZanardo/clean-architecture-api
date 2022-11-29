@@ -3,7 +3,7 @@ import { MissingParamError } from "./missing-param";
 
 export interface HttpResponse {
     statusCode: number;
-    body: any;
+    body?: any;
 }
 
 export class HttpResponse {
@@ -18,6 +18,12 @@ export class HttpResponse {
         return {
             statusCode: 401,
             body: new UnauthorizedError()
+        }
+    }
+
+    static ok(): HttpResponse {
+        return {
+            statusCode: 200,
         }
     }
 }
