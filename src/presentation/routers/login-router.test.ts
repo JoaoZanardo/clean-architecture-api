@@ -4,10 +4,27 @@ interface Body {
 }
 
 class LoginRouter {
-    route(httpRequest: { body: Body }): { statusCode: number } {
+    route(httpRequest: { body: Body }): { statusCode: number, body: MissingParamError } {
         const { email, password } = httpRequest.body;
-        if (!email || !password) return { statusCode: 400 };
-        return { statusCode: 200 };
+        if (!email) return HttpResponse.badRequest('email');
+        if (!password) return HttpResponse.badRequest('password');
+        return { statusCode: 200, body: new MissingParamError('nothing') };
+    }
+}
+
+class HttpResponse {
+    static badRequest(param: string) {
+        return {
+            statusCode: 400,
+            body: new MissingParamError(param)
+        };
+    }
+}
+
+class MissingParamError extends Error {
+    constructor(paramName: string) {
+        super(`Missing param: ${paramName}`);
+        this.name = paramName;
     }
 }
 
@@ -21,6 +38,7 @@ describe('Login Router', () => {
         };
         const htppResponse = sut.route(htppRequest);
         expect(htppResponse.statusCode).toBe(400);
+        expect(htppResponse.body).toEqual(new MissingParamError('email'));
     });
 
     it('Should return 400 if no password is provided', async () => {
@@ -32,5 +50,6 @@ describe('Login Router', () => {
         };
         const htppResponse = sut.route(htppRequest);
         expect(htppResponse.statusCode).toBe(400);
+        expect(htppResponse.body).toEqual(new MissingParamError('password'));
     });
 });
