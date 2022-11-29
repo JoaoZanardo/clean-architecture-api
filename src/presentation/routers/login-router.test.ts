@@ -1,14 +1,24 @@
 import { MissingParamError } from "../helpers/missing-param";
 import { LoginRouter } from "./login-router";
 import { UnauthorizedError } from "../helpers/unauthorized-error";
+import { ServerError } from "../helpers/server-error";
 
 const makeSut = () => {
+    const authUseCaseSpy = makeAuthUseCase();
+    const sut = new LoginRouter(authUseCaseSpy);
+    return {
+        sut,
+        authUseCaseSpy
+    }
+};
+
+const makeAuthUseCase = () => {
     class AuthUseCaseSpy {
         public email: string = '';
         public password: string = '';
         public accessToken: string | null = 'VALID-ACCESS-TOKEN';
 
-        auth(email: string, password: string) {
+        auth(email: string, password: string): string | null {
             this.email = email;
             this.password = password;
 
@@ -16,12 +26,16 @@ const makeSut = () => {
         }
     }
 
-    const authUseCaseSpy = new AuthUseCaseSpy();
-    const sut = new LoginRouter(authUseCaseSpy);
-    return {
-        sut,
-        authUseCaseSpy
+    return new AuthUseCaseSpy();
+};
+const makeAuthUseCaseWithError = () => {
+    class AuthUseCaseSpy {
+        auth(): Error {
+            throw new Error('something went wrong');
+        }
     }
+
+    return new AuthUseCaseSpy();
 };
 
 describe('Login Router', () => {
@@ -77,7 +91,7 @@ describe('Login Router', () => {
     });
 
     it('Should return 200 when valid credentials are provided', async () => {
-        const { sut } = makeSut();
+        const { sut, authUseCaseSpy } = makeSut();
         const htppRequest = {
             body: {
                 email: 'valid_email',
@@ -86,5 +100,21 @@ describe('Login Router', () => {
         };
         const httpResponse = sut.route(htppRequest);
         expect(httpResponse.statusCode).toBe(200);
+        expect(httpResponse.body.accessToken).toEqual(authUseCaseSpy.accessToken);
+    });
+
+    it('Should return 500 if AuthUseCase throws', async () => {
+        const authUseCaseSpy = makeAuthUseCaseWithError();
+
+        const sut = new LoginRouter(authUseCaseSpy);
+        const htppRequest = {
+            body: {
+                email: 'valid_email',
+                password: 'valid_password'
+            }
+        };
+        const httpResponse = sut.route(htppRequest);
+        expect(httpResponse.statusCode).toBe(500);
+        expect(httpResponse.body).toEqual(new ServerError);
     });
 });
