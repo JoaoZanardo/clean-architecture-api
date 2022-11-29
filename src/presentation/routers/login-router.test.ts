@@ -1,32 +1,5 @@
-interface Body {
-    email?: string;
-    password?: string;
-}
-
-class LoginRouter {
-    route(httpRequest: { body: Body }): { statusCode: number, body: MissingParamError } {
-        const { email, password } = httpRequest.body;
-        if (!email) return HttpResponse.badRequest('email');
-        if (!password) return HttpResponse.badRequest('password');
-        return { statusCode: 200, body: new MissingParamError('nothing') };
-    }
-}
-
-class HttpResponse {
-    static badRequest(param: string) {
-        return {
-            statusCode: 400,
-            body: new MissingParamError(param)
-        };
-    }
-}
-
-class MissingParamError extends Error {
-    constructor(paramName: string) {
-        super(`Missing param: ${paramName}`);
-        this.name = paramName;
-    }
-}
+import { MissingParamError } from "../helpers/missing-param";
+import { LoginRouter } from "./login-router";
 
 describe('Login Router', () => {
     it('Should return 400 if no email is provided', async () => {
