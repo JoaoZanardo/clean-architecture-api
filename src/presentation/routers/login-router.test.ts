@@ -1,6 +1,6 @@
 import { MissingParamError } from "../helpers/missing-param";
 import { LoginRouter } from "./login-router";
-import { UnauthorizedError } from "./unauthorized-error";
+import { UnauthorizedError } from "../helpers/unauthorized-error";
 
 const makeSut = () => {
     class AuthUseCaseSpy {

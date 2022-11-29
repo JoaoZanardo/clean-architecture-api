@@ -1,4 +1,4 @@
-import { UnauthorizedError } from "../routers/unauthorized-error";
+import { UnauthorizedError } from "./unauthorized-error";
 import { MissingParamError } from "./missing-param";
 
 export interface HttpResponse {
