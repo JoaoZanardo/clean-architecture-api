@@ -9,11 +9,11 @@ interface Body {
 export class LoginRouter {
     constructor(private authUseCase: any) { }
 
-    route(httpRequest: { body: Body }): { statusCode: number, body: MissingParamError } {
+    route(httpRequest: { body: Body }): HttpResponse {
         const { email, password } = httpRequest.body;
         if (!email) return HttpResponse.badRequest('email');
         if (!password) return HttpResponse.badRequest('password');
         this.authUseCase.auth(email, password);
-        return { statusCode: 200, body: new MissingParamError('nothing') };
+        return HttpResponse.unauthorized();
     }
 }

@@ -1,5 +1,6 @@
 import { MissingParamError } from "../helpers/missing-param";
 import { LoginRouter } from "./login-router";
+import { UnauthorizedError } from "./unauthorized-error";
 
 const makeSut = () => {
     class AuthUseCaseSpy {
@@ -56,5 +57,18 @@ describe('Login Router', () => {
         sut.route(htppRequest);
         expect(authUseCaseSpy.email).toEqual(htppRequest.body.email);
         expect(authUseCaseSpy.password).toEqual(htppRequest.body.password);
+    });
+
+    it('Should return 401 when invalid credentials are provided', async () => {
+        const { sut } = makeSut();
+        const htppRequest = {
+            body: {
+                email: 'any_email',
+                password: 'any_password'
+            }
+        };
+        const httpResponse = sut.route(htppRequest);
+        expect(httpResponse.statusCode).toBe(401);
+        expect(httpResponse.body).toEqual(new UnauthorizedError());
     });
 });
