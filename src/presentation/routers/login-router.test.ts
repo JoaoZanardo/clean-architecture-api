@@ -5,7 +5,8 @@ interface Body {
 
 class LoginRouter {
     route(httpRequest: { body: Body }): { statusCode: number } {
-        if (!httpRequest.body.email || !httpRequest.body.password) return { statusCode: 400 };
+        const { email, password } = httpRequest.body;
+        if (!email || !password) return { statusCode: 400 };
         return { statusCode: 200 };
     }
 }
