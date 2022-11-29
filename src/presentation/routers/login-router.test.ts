@@ -5,7 +5,7 @@ interface Body {
 
 class LoginRouter {
     route(httpRequest: { body: Body }): { statusCode: number } {
-        if (!httpRequest.body.email) return { statusCode: 400 };
+        if (!httpRequest.body.email || !httpRequest.body.password) return { statusCode: 400 };
         return { statusCode: 200 };
     }
 }
@@ -16,6 +16,17 @@ describe('Login Router', () => {
         const htppRequest = {
             body: {
                 password: 'any_password'
+            }
+        };
+        const htppResponse = sut.route(htppRequest);
+        expect(htppResponse.statusCode).toBe(400);
+    });
+
+    it('Should return 400 if no password is provided', async () => {
+        const sut = new LoginRouter();
+        const htppRequest = {
+            body: {
+                email: 'any_email'
             }
         };
         const htppResponse = sut.route(htppRequest);
