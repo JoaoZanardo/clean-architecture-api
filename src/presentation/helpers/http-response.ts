@@ -15,10 +15,10 @@ export class HttpResponse {
         }
     }
 
-    static badRequest(param: string): HttpResponse {
+    static badRequest(error: any): HttpResponse {
         return {
             statusCode: 400,
-            body: new MissingParamError(param)
+            body: error
         }
     }
 

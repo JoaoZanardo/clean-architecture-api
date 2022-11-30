@@ -1,4 +1,5 @@
 import { HttpResponse } from "../helpers/http-response";
+import { MissingParamError } from "../helpers/missing-param";
 
 interface Body {
     email?: string;
@@ -11,8 +12,8 @@ export class LoginRouter {
     async route(httpRequest: { body: Body }): Promise<HttpResponse> {
         try {
             const { email, password } = httpRequest.body;
-            if (!email) return HttpResponse.badRequest('email');
-            if (!password) return HttpResponse.badRequest('password');
+            if (!email) return HttpResponse.badRequest(new MissingParamError('email'));
+            if (!password) return HttpResponse.badRequest(new MissingParamError('password'));
             const accessToken = await this.authUseCase.auth(email, password);
             if (!accessToken) return HttpResponse.unauthorized();
             return HttpResponse.ok({ accessToken });
