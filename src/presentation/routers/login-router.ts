@@ -1,6 +1,6 @@
 import { HttpResponse } from "../helpers/http-response";
-import { InvalidParamError } from "../helpers/invalid-param-error";
-import { MissingParamError } from "../helpers/missing-param";
+import { InvalidParamError, MissingParamError } from "../errors";
+
 
 interface Body {
     email?: string;

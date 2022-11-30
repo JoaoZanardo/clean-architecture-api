@@ -1,6 +1,4 @@
-import { UnauthorizedError } from "./unauthorized-error";
-import { MissingParamError } from "./missing-param";
-import { ServerError } from "./server-error";
+import { ServerError, UnauthorizedError } from "../errors";
 
 export interface HttpResponse {
     statusCode: number;
