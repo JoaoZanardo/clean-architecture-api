@@ -8,7 +8,7 @@ interface Body {
 }
 
 export interface EmailValidator {
-    isValid(email: string): boolean;
+    isValid(email: string): boolean | Error;
 }
 
 export class LoginRouter {
