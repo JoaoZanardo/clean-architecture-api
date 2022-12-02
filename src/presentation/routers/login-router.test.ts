@@ -4,7 +4,8 @@ import {
     ServerError,
     InvalidParamError
 } from "../errors";
-import { EmailValidator, LoginRouter } from "./login-router";
+import { LoginRouter } from "./login-router";
+import { EmailValidator } from "../../interfaces/email-validator";
 
 const makeSut = () => {
     const authUseCaseSpy = makeAuthUseCase();

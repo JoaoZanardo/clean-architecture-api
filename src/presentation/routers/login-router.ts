@@ -1,20 +1,16 @@
 import { HttpResponse } from "../helpers/http-response";
 import { InvalidParamError, MissingParamError } from "../errors";
-
+import { EmailValidator } from "../../interfaces/email-validator";
 
 interface Body {
     email?: string;
     password?: string;
 }
 
-export interface EmailValidator {
-    isValid(email: string): boolean | Error;
-}
-
 export class LoginRouter {
     constructor(
         private authUseCase: any,
-        private emailValidator: EmailValidator
+        private emailValidator: EmailValidator | { isValid: () => {} }
     ) { }
 
     async route(httpRequest: { body: Body }): Promise<HttpResponse> {
