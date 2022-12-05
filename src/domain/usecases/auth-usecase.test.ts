@@ -1,17 +1,22 @@
 import { AuthUseCase, User } from "./auth-usecase";
 
-const makeSut = () => {
+const makeEncrypter = () => {
     class EncrypterSpy {
         public password: string = '';
         public hashedPassword: string = '';
+        public isValid: boolean = true
 
         compare(password: string, hashedPassword: string): Boolean {
             this.password = password;
             this.hashedPassword = hashedPassword;
-            return false;
+            return this.isValid;
         }
     }
 
+    return new EncrypterSpy();
+};
+
+const makeLoadUserByEmailRepository = () => {
     class LoadUserByEmailRepositorySpy {
         public user: null | User = { password: 'hashed_password' };
 
@@ -20,8 +25,12 @@ const makeSut = () => {
         }
     }
 
-    const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy();
-    const encrypterSpy = new EncrypterSpy();
+    return new LoadUserByEmailRepositorySpy();
+};
+
+const makeSut = () => {
+    const loadUserByEmailRepositorySpy = makeLoadUserByEmailRepository();
+    const encrypterSpy = makeEncrypter();
     return {
         loadUserByEmailRepositorySpy,
         sut: new AuthUseCase(loadUserByEmailRepositorySpy, encrypterSpy),
@@ -38,7 +47,8 @@ describe('Auth Usecase', () => {
     });
 
     it('Should returns null if an invalid password is provided', async () => {
-        const { sut } = makeSut();
+        const { sut, encrypterSpy } = makeSut();
+        encrypterSpy.isValid = false;
         const accessToken = await sut.auth('valid@email.com', 'invalid_password');
         expect(accessToken).toBeNull();
     });

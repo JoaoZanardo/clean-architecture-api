@@ -19,7 +19,8 @@ export class AuthUseCase {
     async auth(email: string, password: string): Promise<null | string> {
         const user = await this.loadUserByEmailRepo.load(email);
         if (!user) return null;
-        this.encrypter.compare(password, user.password)
-        return null;
+        const isValid = this.encrypter.compare(password, user.password);
+        if (!isValid) return null;
+        return 'VALID-ACCESS-TOKEN';
     }
 }
