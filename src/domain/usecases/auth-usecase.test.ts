@@ -1,21 +1,6 @@
+import { AuthUseCase, LoadUserByEmailRepositorySpy } from "./auth-usecase";
+
 const makeSut = () => {
-    interface User { }
-
-    class LoadUserByEmailRepositorySpy {
-        async load(email: string): Promise<null | User> {
-            return null;
-        }
-    }
-
-    class AuthUseCase {
-        constructor(private loadUserByEmailRepo: LoadUserByEmailRepositorySpy) { }
-
-        async auth(email: string, password: string): Promise<null | string> {
-            const user = await this.loadUserByEmailRepo.load(email);
-            if (!user) return null;
-            return 'VALID-ACCESS-TOKEN';
-        }
-    }
     const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy();
     return {
         loadUserByEmailRepositorySpy,
