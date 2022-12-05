@@ -2,8 +2,8 @@ import { AuthUseCase, User } from "./auth-usecase";
 
 const makeEncrypter = () => {
     class EncrypterSpy {
-        public password: string = '';
-        public hashedPassword: string = '';
+        public password: string | null = null;
+        public hashedPassword: string | null = null;
         public isValid: boolean = true
 
         compare(password: string, hashedPassword: string): Boolean {
@@ -22,8 +22,10 @@ const makeLoadUserByEmailRepository = () => {
             id: 'any_id',
             password: 'hashed_password'
         };
+        public email: string | null = null;
 
         async load(email: string): Promise<null | User> {
+            this.email = email;
             return this.user;
         }
     }
@@ -33,7 +35,7 @@ const makeLoadUserByEmailRepository = () => {
 
 const makeTokengenerator = () => {
     class TokenGeneratorSpy {
-        public userId: string = '';
+        public userId: string | null = null;
         public accessToken: string | null = 'VALID-ACCESS-TOKEN'
 
         async generate(userId: string): Promise<string | null> {
@@ -58,6 +60,13 @@ const makeSut = () => {
 };
 
 describe('Auth Usecase', () => {
+    it('Should calls LoadUserByEmailRepository with correct email', async () => {
+        const { sut, loadUserByEmailRepositorySpy } = makeSut();
+        await sut.auth('any@email.com', 'any_password');
+        expect(loadUserByEmailRepositorySpy.email).toEqual('any@email.com');
+    });
+
+
     it('Should returns null if an invalid email is provided', async () => {
         const { sut, loadUserByEmailRepositorySpy } = makeSut();
         loadUserByEmailRepositorySpy.user = null;
