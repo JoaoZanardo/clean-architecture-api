@@ -1,4 +1,5 @@
 export interface User {
+    id: string
     password: string
 }
 
@@ -10,10 +11,15 @@ interface Encrypter {
     compare(password: string, hashedPassword: string): Boolean;
 }
 
+interface TokenGenerator {
+    generate(userId: string): Promise<string | null>;
+}
+
 export class AuthUseCase {
     constructor(
         private loadUserByEmailRepo: LoadUserByEmailRepository,
-        private encrypter: Encrypter
+        private encrypter: Encrypter,
+        private tokenGenerator: TokenGenerator
     ) { }
 
     async auth(email: string, password: string): Promise<null | string> {
@@ -21,6 +27,6 @@ export class AuthUseCase {
         if (!user) return null;
         const isValid = this.encrypter.compare(password, user.password);
         if (!isValid) return null;
-        return 'VALID-ACCESS-TOKEN';
+        return await this.tokenGenerator.generate(user.id);
     }
 }
