@@ -1,17 +1,25 @@
-interface User { }
+export interface User {
+    password: string
+}
 
-export class LoadUserByEmailRepositorySpy {
-    async load(email: string): Promise<null | User> {
-        return null;
-    }
+interface LoadUserByEmailRepository {
+    load(email: string): Promise<User | null>;
+}
+
+interface Encrypter {
+    compare(password: string, hashedPassword: string): Boolean;
 }
 
 export class AuthUseCase {
-    constructor(private loadUserByEmailRepo: LoadUserByEmailRepositorySpy) { }
+    constructor(
+        private loadUserByEmailRepo: LoadUserByEmailRepository,
+        private encrypter: Encrypter
+    ) { }
 
     async auth(email: string, password: string): Promise<null | string> {
         const user = await this.loadUserByEmailRepo.load(email);
         if (!user) return null;
-        return 'VALID-ACCESS-TOKEN';
+        this.encrypter.compare(password, user.password)
+        return null;
     }
 }
