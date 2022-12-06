@@ -1,13 +1,19 @@
-class EncrypterImplementation {
-    async compare(password: string, hashedPassword: string): Promise<boolean> {
-        return true;
-    }
-}
+import { EncrypterImplementation } from "./encrypter";
+
+jest.mock("./encrypter");
 
 describe('Encrypter', () => {
+    const mockedEncrypterImplementation = new EncrypterImplementation() as jest.Mocked<EncrypterImplementation>;
+
     it('Should returns true if encrypter returns true', async () => {
-        const sut = new EncrypterImplementation();
-        const isValid = await sut.compare('any_password', 'hashed_password');
+        mockedEncrypterImplementation.compare.mockResolvedValueOnce(true);
+        const isValid = await mockedEncrypterImplementation.compare('any_value', 'hashed_value');
         expect(isValid).toBeTruthy();
+    });
+
+    it('Should returns false if encrypter returns false', async () => {
+        mockedEncrypterImplementation.compare.mockResolvedValueOnce(false);
+        const isValid = await mockedEncrypterImplementation.compare('any_value', 'hashed_value');
+        expect(isValid).toBeFalsy();
     });
 });
