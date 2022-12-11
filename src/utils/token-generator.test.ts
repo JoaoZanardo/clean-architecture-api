@@ -14,7 +14,7 @@ describe('Token Generator', () => {
         expect(token).toBeNull();
     });
 
-    it('Should returns a token returns token', () => {
+    it('Should returns a token if JWT returns a token', () => {
         const sut = makeSut();
         sut.generate.mockReturnValueOnce('valid_token');
         const token = sut.generate('any_id');
