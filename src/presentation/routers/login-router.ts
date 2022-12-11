@@ -1,7 +1,6 @@
 import { HttpResponse } from "../helpers/http-response";
 import { InvalidParamError, MissingParamError } from "../errors";
 import { EmailValidator } from "../../interfaces/email-validator";
-import { AuthUseCase } from "src/domain/usecases/auth-usecase";
 
 interface Body {
     email?: string;
@@ -10,7 +9,7 @@ interface Body {
 
 export class LoginRouter {
     constructor(
-        private authUseCase: AuthUseCase,
+        private authUseCase: any,
         private emailValidator: EmailValidator | { isValid: () => {} }
     ) { }
 

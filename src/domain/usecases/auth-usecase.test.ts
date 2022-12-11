@@ -6,7 +6,7 @@ const makeEncrypter = () => {
         public hashedPassword: string | null = null;
         public isValid: boolean = true
 
-        compare(password: string, hashedPassword: string): Boolean {
+        async compare(password: string, hashedPassword: string): Promise<Boolean> {
             this.password = password;
             this.hashedPassword = hashedPassword;
             return this.isValid;

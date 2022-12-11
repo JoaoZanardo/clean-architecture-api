@@ -1,3 +1,5 @@
+import { Encrypter } from "../../interfaces/encrypter";
+
 export interface User {
     id: string
     password: string
@@ -9,10 +11,6 @@ interface LoadUserByEmailRepository {
 
 interface UpdateAccessTokenRepository {
     update(userId: string, accessToken: string | null): Promise<void>;
-}
-
-interface Encrypter {
-    compare(password: string, hashedPassword: string): Boolean;
 }
 
 interface TokenGenerator {
@@ -30,7 +28,7 @@ export class AuthUseCase {
     async auth(email: string, password: string): Promise<null | string> {
         const user = await this.loadUserByEmailRepo.load(email);
         if (!user) return null;
-        const isValid = this.encrypter.compare(password, user.password);
+        const isValid = await this.encrypter.compare(password, user.password);
         if (!isValid) return null;
         const accessToken = await this.tokenGenerator.generate(user.id);
         await this.updateAccessTokenRepo.update(user.id, accessToken);
