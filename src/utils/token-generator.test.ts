@@ -1,13 +1,23 @@
-export class TokenGenerator {
-    async generate(id: string): Promise<string | null> {
-        return null;
-    }
-}
+import { TokenGeneratorImplementation } from "./token-generator-implementation";
+
+jest.mock("./token-generator-implementation")
+
+const makeSut = () => {
+    return new TokenGeneratorImplementation('secret') as jest.Mocked<TokenGeneratorImplementation>;
+};
 
 describe('Token Generator', () => {
-    it('Should returns null if JWT returns null', async () => {
-        const sut = new TokenGenerator();
-        const accessToken = await sut.generate('any_user_id');
-        expect(accessToken).toBeNull();
+    it('Should returns null if JWT returns null', () => {
+        const sut = makeSut();
+        sut.generate.mockReturnValueOnce(null);
+        const token = sut.generate('any_id');
+        expect(token).toBeNull();
+    });
+
+    it('Should returns a token returns token', () => {
+        const sut = makeSut();
+        sut.generate.mockReturnValueOnce('valid_token');
+        const token = sut.generate('any_id');
+        expect(token).toEqual('valid_token');
     });
 });
