@@ -1,3 +1,4 @@
+import { TokenGenerator } from "../../interfaces/token-generator";
 import { Encrypter } from "../../interfaces/encrypter";
 
 export interface User {
@@ -11,10 +12,6 @@ interface LoadUserByEmailRepository {
 
 interface UpdateAccessTokenRepository {
     update(userId: string, accessToken: string | null): Promise<void>;
-}
-
-interface TokenGenerator {
-    generate(userId: string): Promise<string | null>;
 }
 
 export class AuthUseCase {

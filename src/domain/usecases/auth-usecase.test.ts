@@ -38,7 +38,7 @@ const makeTokengenerator = () => {
         public userId: string | null = null;
         public accessToken: string | null = 'VALID-ACCESS-TOKEN'
 
-        async generate(userId: string): Promise<string | null> {
+        generate(userId: string): string | null {
             this.userId = userId;
             return this.accessToken;
         }
