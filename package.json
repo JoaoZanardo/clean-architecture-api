@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/JoaoZanardo/ca-api#readme",
   "devDependencies": {
+    "@shelf/jest-mongodb": "^4.1.4",
     "@types/bcrypt": "^5.0.0",
     "@types/jest": "^29.2.3",
     "@types/jsonwebtoken": "^8.5.9",
@@ -28,6 +29,7 @@
   "dependencies": {
     "bcrypt": "^5.1.0",
     "jsonwebtoken": "^8.5.1",
+    "mongodb": "^4.13.0",
     "validator": "^13.7.0"
   }
 }
