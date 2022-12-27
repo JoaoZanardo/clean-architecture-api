@@ -1,28 +1,8 @@
-import { Collection, Document, MongoClient, WithId } from 'mongodb';
-
-interface User {
-    name: string;
-    email: string;
-    password: string;
-    city: string;
-    country: string;
-}
-
-class LoadUserByEmailRepository {
-    constructor(private userModel: Collection<Document>) { }
-
-    async load(email: string): Promise<WithId<Document> | null> {
-        const user = await this.userModel.findOne({ email }, {
-            projection: {
-                password: 1
-            }
-        });
-        return user;
-    }
-}
+import { Collection, Document, MongoClient } from 'mongodb';
+import { DbLoadUserByEmailRepository } from './load-user-by-email-repository';
 
 const makeSut = (userModel: Collection<Document>) => {
-    return new LoadUserByEmailRepository(userModel);
+    return new DbLoadUserByEmailRepository(userModel);
 };
 
 describe('LoadUserByEmail Repository', () => {
