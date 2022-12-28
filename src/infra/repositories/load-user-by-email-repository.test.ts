@@ -1,4 +1,5 @@
 import { Collection, Document, MongoClient } from 'mongodb';
+import mongoHelper from '../helpers/mongo-helper';
 import { DbLoadUserByEmailRepository } from './load-user-by-email-repository';
 
 const makeSut = (userModel: Collection<Document>) => {
@@ -7,11 +8,9 @@ const makeSut = (userModel: Collection<Document>) => {
 
 describe('LoadUserByEmail Repository', () => {
     let userModel: Collection<Document>;
-    let connection: MongoClient;
 
     beforeAll(async () => {
-        connection = await MongoClient.connect(process.env.MONGO_URL as string, {});
-        const db = connection.db();
+        const { db } = await mongoHelper.connect(process.env.MONGO_URL as string, 'test');
         userModel = db.collection('users');
     });
 
@@ -20,7 +19,7 @@ describe('LoadUserByEmail Repository', () => {
     });
 
     afterAll(async () => {
-        await connection.close();
+        await mongoHelper.disconnect();
     });
 
     it('Should returns null if no user is found', async () => {
