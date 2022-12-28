@@ -1,9 +1,9 @@
-import { EncrypterImplementation } from "./encrypter-implementation";
+import { Bcrypt } from "./bcrypt";
 
-jest.mock("./encrypter-implementation");
+jest.mock("./bcrypt");
 
 const makeSut = () => {
-    return new EncrypterImplementation() as jest.Mocked<EncrypterImplementation>;
+    return new Bcrypt() as jest.Mocked<Bcrypt>;
 };
 
 describe('Encrypter', () => {

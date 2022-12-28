@@ -1,9 +1,9 @@
-import { EmailValidatorImplementation } from './email-validator-implementation';
+import { Validator } from './validator';
 
-jest.mock('./email-validator-implementation');
+jest.mock('./validator');
 
 const makeSut = () => {
-    return new EmailValidatorImplementation() as jest.Mocked<EmailValidatorImplementation>;
+    return new Validator() as jest.Mocked<Validator>;
 };
 
 describe('Email Validator', () => {

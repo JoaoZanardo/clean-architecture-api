@@ -1,9 +1,9 @@
-import { TokenGeneratorImplementation } from "./token-generator-implementation";
+import { Jwt } from "./jwt";
 
-jest.mock("./token-generator-implementation")
+jest.mock("./jwt")
 
 const makeSut = () => {
-    return new TokenGeneratorImplementation('secret') as jest.Mocked<TokenGeneratorImplementation>;
+    return new Jwt('secret') as jest.Mocked<Jwt>;
 };
 
 describe('Token Generator', () => {

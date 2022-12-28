@@ -1,5 +1,5 @@
 import { Collection, Document, WithId } from "mongodb";
-import { LoadUserByEmailRepository } from "src/interfaces/load-user-by-email-repository";
+import { LoadUserByEmailRepository } from "../../interfaces/load-user-by-email-repository";
 
 export class DbLoadUserByEmailRepository implements LoadUserByEmailRepository<WithId<Document>> {
     constructor(private userModel: Collection<Document>) { }
