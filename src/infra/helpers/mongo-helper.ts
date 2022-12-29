@@ -7,9 +7,10 @@ class MongoHelper {
         this.client = await MongoClient.connect(uri, {});
         return { client: this.client, db: this.client.db(dbName) };
     }
-    
+
     async disconnect(): Promise<void> {
-        await this.client?.close();
+        if(!this.client) return;
+        await this.client.close();
     }
 }
 
