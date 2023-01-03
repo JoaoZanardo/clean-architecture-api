@@ -1,19 +1,10 @@
 import { Collection, Document } from "mongodb";
 import mongoHelper from "../helpers/mongo-helper";
+import { DbUpdateAccessTokenRepository } from "./update-access-token-repository";
 
-class UpdateAccessTokenRepository {
-    constructor(private userModel: Collection<Document>) { }
-
-    async update(userId: string, accessToken: string): Promise<void> {
-        await this.userModel.findOneAndUpdate(
-            { _id: userId },
-            {
-                $set: {
-                    accessToken
-                }
-            });
-    }
-}
+const makeSut = (userModel: Collection<Document>) => {
+    return new DbUpdateAccessTokenRepository(userModel);
+};
 
 describe('UpdateAccessToken Repository', () => {
     let userModel: Collection<Document>;
@@ -32,7 +23,7 @@ describe('UpdateAccessToken Repository', () => {
     });
 
     test('Should update the user with the given token', async () => {
-        const sut = new UpdateAccessTokenRepository(userModel);
+        const sut = makeSut(userModel)
         const user = await userModel.insertOne({
             name: 'any_name',
             city: 'any_city',
