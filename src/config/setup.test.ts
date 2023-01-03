@@ -15,7 +15,6 @@ describe('App Setup', () => {
             res.send('TEST');
         });
         const res = await agent(app).get('/test');
-        console.log(res.headers);
         expect(res.headers['access-control-allow-origin']).toEqual('*');
         expect(res.headers['access-control-allow-methods']).toEqual('*');
         expect(res.headers['access-control-allow-headers']).toEqual('*');
