@@ -9,7 +9,7 @@ class MongoHelper {
     }
 
     async disconnect(): Promise<void> {
-        if(!this.client) return;
+        if (!this.client) return;
         await this.client.close();
     }
 }
