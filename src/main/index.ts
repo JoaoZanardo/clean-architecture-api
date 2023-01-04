@@ -1,6 +1,6 @@
 import mongoHelper from "../infra/helpers/mongo-helper";
-import app from "../config/app";
-import env from '../config/env';
+import app from "./config/app";
+import env from './config/env';
 
 mongoHelper.connect(env.mongoUrl, 'ca-api')
     .then(() => {

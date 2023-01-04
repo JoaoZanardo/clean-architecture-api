@@ -1,5 +1,5 @@
 import { agent } from "supertest";
-import app from "../config/app";
+import app from "../main/config/app";
 
 describe('JSON Parser Middleware', () => {
     it('Should parse body as JSON', async () => {
