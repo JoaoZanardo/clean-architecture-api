@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { ExpressRouterAdapter } from "../adapters/express-router-adapter";
-import { loginRouter } from "../composers/login-router-composer";
+import { LoginRouterCompose } from "../composers/login-router-composer";
 
 export const loginRoutes = (router: Router) => {
-    router.post('/login', ExpressRouterAdapter.adapt(loginRouter));
+    router.post('/login', ExpressRouterAdapter.adapt(LoginRouterCompose.compose()));
 };
