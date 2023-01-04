@@ -1,6 +1,6 @@
 import { Application } from "express";
-import { jsonParser } from "../../middlewares/json-parser";
-import { cors } from "../../middlewares/cors";
+import { jsonParser } from "../middlewares/json-parser";
+import { cors } from "../middlewares/cors";
 
 export const setupApp = (app: Application): void => {
     app.disable('x-powered-by');
