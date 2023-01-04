@@ -1,5 +1,5 @@
 import { Collection, Db, Document, MongoClient } from 'mongodb';
-import env from 'src/main/config/env';
+import env from '../../main/config/env';
 
 class MongoHelper {
     private client: MongoClient | null = null;
