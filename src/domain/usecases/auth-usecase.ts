@@ -1,22 +1,16 @@
 import { TokenGenerator } from "../../interfaces/token-generator";
 import { Encrypter } from "../../interfaces/encrypter";
+import { LoadUserByEmailRepository } from "src/interfaces/load-user-by-email-repository";
+import { UpdateAccessTokenRepository } from "src/interfaces/update-access-token-repository";
 
 export interface User {
     id: string
     password: string
 }
 
-interface LoadUserByEmailRepository {
-    load(email: string): Promise<User | null>;
-}
-
-interface UpdateAccessTokenRepository {
-    update(userId: string, accessToken: string | null): Promise<void>;
-}
-
 export class AuthUseCase {
     constructor(
-        private loadUserByEmailRepo: LoadUserByEmailRepository,
+        private loadUserByEmailRepo: LoadUserByEmailRepository<any>,
         private encrypter: Encrypter,
         private tokenGenerator: TokenGenerator,
         private updateAccessTokenRepo: UpdateAccessTokenRepository
