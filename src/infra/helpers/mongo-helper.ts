@@ -8,6 +8,11 @@ class MongoHelper {
         return { client: this.client, db: this.client.db(dbName) };
     }
 
+    async getDb(): Promise<Db | null> {
+        if (!this.client) return null;
+        return this.client.db();
+    }
+
     async disconnect(): Promise<void> {
         if (!this.client) return;
         await this.client.close();
