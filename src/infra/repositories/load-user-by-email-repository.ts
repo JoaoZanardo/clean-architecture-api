@@ -1,11 +1,12 @@
-import { Collection, Document, WithId } from "mongodb";
+import { Document, WithId } from "mongodb";
 import { LoadUserByEmailRepository } from "../../interfaces/load-user-by-email-repository";
+import mongoHelper from "../helpers/mongo-helper";
 
 export class DbLoadUserByEmailRepository implements LoadUserByEmailRepository<WithId<Document>> {
-    constructor(private userModel: Collection<Document>) { }
-
     async load(email: string): Promise<WithId<Document> | null> {
-        const user = await this.userModel.findOne({ email }, {
+        await mongoHelper.connect(process.env.MONGO_URL as string);
+        const userModel = await mongoHelper.getCollection('users');
+        const user = await userModel.findOne({ email }, {
             projection: {
                 password: 1
             }

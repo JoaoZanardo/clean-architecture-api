@@ -1,9 +1,9 @@
-import { Collection, Document, MongoClient } from 'mongodb';
+import { Collection, Document } from 'mongodb';
 import mongoHelper from '../helpers/mongo-helper';
 import { DbLoadUserByEmailRepository } from './load-user-by-email-repository';
 
-const makeSut = (userModel: Collection<Document>) => {
-    return new DbLoadUserByEmailRepository(userModel);
+const makeSut = () => {
+    return new DbLoadUserByEmailRepository();
 };
 
 describe('LoadUserByEmail Repository', () => {
@@ -23,13 +23,13 @@ describe('LoadUserByEmail Repository', () => {
     });
 
     it('Should returns null if no user is found', async () => {
-        const sut = makeSut(userModel);
+        const sut = makeSut();
         const user = await sut.load('invalid_email@email.com');
         expect(user).toBeNull();
     });
 
     it('Should returns an user if user is found', async () => {
-        const sut = makeSut(userModel);
+        const sut = makeSut();
         const fakeUser = await userModel.insertOne({
             name: 'any_name',
             city: 'any_city',

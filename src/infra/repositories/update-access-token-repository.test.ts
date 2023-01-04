@@ -2,8 +2,8 @@ import { Collection, Document } from "mongodb";
 import mongoHelper from "../helpers/mongo-helper";
 import { DbUpdateAccessTokenRepository } from "./update-access-token-repository";
 
-const makeSut = (userModel: Collection<Document>) => {
-    return new DbUpdateAccessTokenRepository(userModel);
+const makeSut = () => {
+    return new DbUpdateAccessTokenRepository();
 };
 
 describe('UpdateAccessToken Repository', () => {
@@ -23,7 +23,7 @@ describe('UpdateAccessToken Repository', () => {
     });
 
     test('Should update the user with the given token', async () => {
-        const sut = makeSut(userModel)
+        const sut = makeSut()
         const user = await userModel.insertOne({
             name: 'any_name',
             city: 'any_city',
