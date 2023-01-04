@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc && node dist/main/index",
-    "test": "jest --noStackTrace --runInBand"
+    "test": "jest --noStackTrace --runInBand --forceExit"
   },
   "repository": {
     "type": "git",
