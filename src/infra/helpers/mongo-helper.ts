@@ -1,4 +1,5 @@
 import { Collection, Db, Document, MongoClient } from 'mongodb';
+import env from 'src/main/config/env';
 
 class MongoHelper {
     private client: MongoClient | null = null;
@@ -12,7 +13,7 @@ class MongoHelper {
 
     async getCollection(name: string): Promise<Collection<Document>> {
         if (!this.client || !this.db) {
-            await this.connect(process.env.MONGO_URL as string,);
+            await this.connect(env.mongoUrl);
         }
         return this.db!.collection(name);
     }
