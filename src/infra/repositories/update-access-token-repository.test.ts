@@ -10,8 +10,8 @@ describe('UpdateAccessToken Repository', () => {
     let userModel: Collection<Document>;
 
     beforeAll(async () => {
-        const { db } = await mongoHelper.connect(process.env.MONGO_URL as string, 'test');
-        userModel = db.collection('users');
+        await mongoHelper.connect(process.env.MONGO_URL as string);
+        userModel = await mongoHelper.getCollection('users');
     });
 
     beforeEach(async () => {
