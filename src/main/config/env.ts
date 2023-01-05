@@ -1,4 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 export default {
-    mongoUrl: process.env.MONGO_URL || 'mongodb+srv://joaoZanardo:pinguim2005ZZZ@cursojs01.hsoem.mongodb.net/ca-api?retryWrites=true&w=majority',
-    tokenScret: '11011'
+    mongoUrl: process.env.MONGO_URL as string,
+    mongoTestUrl: process.env.MONGO_TEST_URL as string,
+    tokenScret: process.env.TOKEN_SECRET as string
 }

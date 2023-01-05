@@ -9,7 +9,7 @@ describe('Login Routes', () => {
     let userModel: Collection<Document>;
 
     beforeAll(async () => {
-        await mongoHelper.connect(env.mongoUrl);
+        await mongoHelper.connect(env.mongoTestUrl);
         userModel = await mongoHelper.getCollection('users');
     });
 
