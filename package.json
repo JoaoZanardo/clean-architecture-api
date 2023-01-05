@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && node dist/main/index",
+    "start": "tsc && node dist/src/main/index",
     "test": "jest --noStackTrace --runInBand --forceExit",
     "test:unit": "npm test -- -c jest.config.js",
     "test:integration": "npm test -- -c test/jest.config.js"
