@@ -19,6 +19,7 @@ export class LoginRouter {
             if (!accessToken) return HttpResponse.unauthorized();
             return HttpResponse.ok({ accessToken });
         } catch (error) {
+            console
             return HttpResponse.serverError();
         }
     }
