@@ -2,15 +2,11 @@ import { TokenGenerator } from "../../interfaces/token-generator";
 import { Encrypter } from "../../interfaces/encrypter";
 import { LoadUserByEmailRepository } from "src/interfaces/load-user-by-email-repository";
 import { UpdateAccessTokenRepository } from "src/interfaces/update-access-token-repository";
-
-export interface User {
-    id: string
-    password: string
-}
+import { User } from "../../interfaces/user";
 
 export class AuthUseCase {
     constructor(
-        private loadUserByEmailRepo: LoadUserByEmailRepository<any>,
+        private loadUserByEmailRepo: LoadUserByEmailRepository<User>,
         private encrypter: Encrypter,
         private tokenGenerator: TokenGenerator,
         private updateAccessTokenRepo: UpdateAccessTokenRepository
@@ -21,7 +17,7 @@ export class AuthUseCase {
         if (!user) return null;
         const isValid = await this.encrypter.compare(password, user.password);
         if (!isValid) return null;
-        const accessToken = await this.tokenGenerator.generate(user.id);
+        const accessToken = this.tokenGenerator.generate(user.id);
         await this.updateAccessTokenRepo.update(user.id, accessToken);
         return accessToken;
     }

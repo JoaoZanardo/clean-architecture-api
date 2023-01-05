@@ -1,4 +1,5 @@
-import { AuthUseCase, User } from "./auth-usecase";
+import { User } from "../../interfaces/user";
+import { AuthUseCase } from "./auth-usecase";
 
 const makeEncrypter = () => {
     class EncrypterSpy {
