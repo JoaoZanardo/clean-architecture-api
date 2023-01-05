@@ -2,8 +2,7 @@ import { LoadUserByEmailRepository } from "../../interfaces/load-user-by-email-r
 import mongoHelper from "../helpers/mongo-helper";
 import { User } from "src/interfaces/user";
 
-
-export class DbLoadUserByEmailRepository implements LoadUserByEmailRepository<User | null> {
+export class MongoLoadUserByEmailRepository implements LoadUserByEmailRepository<User | null> {
     async load(email: string): Promise<User | null> {
         const userModel = await mongoHelper.getCollection('users');
         const user = await userModel.findOne({ email }, {

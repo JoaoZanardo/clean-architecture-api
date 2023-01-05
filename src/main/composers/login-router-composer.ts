@@ -1,6 +1,6 @@
 import { AuthUseCase } from "../../domain/usecases/auth-usecase";
-import { DbLoadUserByEmailRepository } from "../../infra/repositories/load-user-by-email-repository";
-import { DbUpdateAccessTokenRepository } from "../../infra/repositories/update-access-token-repository";
+import { MongoLoadUserByEmailRepository } from "../../infra/repositories/mongo-load-user-by-email-repository";
+import { MongoDBUpdateAccessTokenRepository } from "../../infra/repositories/mongo-update-access-token-repository";
 import { LoginRouter } from "../../presentation/routers/login-router";
 import { Bcrypt } from "../../utils/bcrypt";
 import { Jwt } from "../../utils/jwt";
@@ -11,8 +11,8 @@ export class LoginRouterCompose {
     static compose() {
         const jwt = new Jwt(env.tokenScret);
         const bcrypt = new Bcrypt();
-        const loadUserByEmailRepository = new DbLoadUserByEmailRepository();
-        const updateAccessTokenRepository = new DbUpdateAccessTokenRepository();
+        const loadUserByEmailRepository = new MongoLoadUserByEmailRepository();
+        const updateAccessTokenRepository = new MongoDBUpdateAccessTokenRepository();
         const authUseCase = new AuthUseCase(
             loadUserByEmailRepository,
             bcrypt,

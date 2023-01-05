@@ -1,10 +1,10 @@
 import { Collection, Document } from 'mongodb';
 import env from '../../main/config/env';
 import mongoHelper from '../helpers/mongo-helper';
-import { DbLoadUserByEmailRepository } from './load-user-by-email-repository';
+import { MongoLoadUserByEmailRepository } from './mongo-load-user-by-email-repository';
 
 const makeSut = () => {
-    return new DbLoadUserByEmailRepository();
+    return new MongoLoadUserByEmailRepository();
 };
 
 describe('LoadUserByEmail Repository', () => {
