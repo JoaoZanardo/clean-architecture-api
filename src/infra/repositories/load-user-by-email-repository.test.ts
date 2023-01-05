@@ -1,4 +1,5 @@
 import { Collection, Document } from 'mongodb';
+import env from '../../main/config/env';
 import mongoHelper from '../helpers/mongo-helper';
 import { DbLoadUserByEmailRepository } from './load-user-by-email-repository';
 
@@ -10,7 +11,7 @@ describe('LoadUserByEmail Repository', () => {
     let userModel: Collection<Document>;
 
     beforeAll(async () => {
-        await mongoHelper.connect(process.env.MONGO_URL as string);
+        await mongoHelper.connect(env.mongoUrl);
         userModel = await mongoHelper.getCollection('users');
     });
 
