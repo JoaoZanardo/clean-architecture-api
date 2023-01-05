@@ -32,4 +32,16 @@ describe('Login Routes', () => {
             .send({ email: 'valid@email.com', password: 'valid_password' })
             .expect(200);
     });
+
+    it('Should return 400 when invalid credentials are provided', async () => {
+        await userModel.insertOne({
+            email: 'invalid_email',
+            password: await bcrypt.hash('valid_password', 10)
+        });
+
+        await agent(app)
+            .post('/api/login')
+            .send({ email: 'valid@email.com', password: 'valid_password' })
+            .expect(401);
+    });
 });
