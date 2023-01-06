@@ -4,7 +4,7 @@ import { TokenGenerator } from "../interfaces/token-generator";
 export class Jwt implements TokenGenerator {
     constructor(private secret: string) { }
 
-    generate(id: string): string | null {
-        return jwt.sign(id, this.secret);
+    generate(payload: string): string | null {
+        return jwt.sign(payload, this.secret);
     }
 }
