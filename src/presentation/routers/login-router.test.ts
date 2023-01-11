@@ -9,7 +9,7 @@ import { AuthUseCase } from '../../domain/usecases/auth-usecase';
 import { Bcrypt } from "../../utils/bcrypt";
 import { Jwt } from "../../utils/jwt";
 import { MongoDBUpdateAccessTokenRepository } from "../../infra/repositories/mongo-update-access-token-repository";
-import { MongoLoadUserByEmailRepository } from "../../infra/repositories/mongo-load-user-by-email-repository";
+import { MongoDBLoadUserByEmailRepository } from "../../infra/repositories/mongo-load-user-by-email-repository";
 import { Validator } from "../../utils/validator";
 
 jest.mock('../../domain/usecases/auth-usecase');
@@ -28,7 +28,7 @@ const makeSut = () => {
 
 const makeMockedAuthUseCase = () => {
     return new AuthUseCase(
-        new MongoLoadUserByEmailRepository(),
+        new MongoDBLoadUserByEmailRepository(),
         new Bcrypt(), new Jwt('secret'),
         new MongoDBUpdateAccessTokenRepository()
     ) as jest.Mocked<AuthUseCase>;
