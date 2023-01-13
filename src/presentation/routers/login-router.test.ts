@@ -5,37 +5,18 @@ import {
     InvalidParamError,
 } from "../errors";
 import { LoginRouter } from "./login-router";
-import { AuthUseCase } from '../../domain/usecases/auth-usecase';
-import { Bcrypt } from "../../utils/bcrypt";
-import { Jwt } from "../../utils/jwt";
-import { MongoDBUpdateAccessTokenRepository } from "../../infra/repositories/mongo-update-access-token-repository";
-import { MongoDBLoadUserByEmailRepository } from "../../infra/repositories/mongo-load-user-by-email-repository";
-import { Validator } from "../../utils/validator";
-
-jest.mock('../../domain/usecases/auth-usecase');
-jest.mock('../../utils/validator');
+import { AuthUseCaseSpy } from "./_test_/mocks/mock-auth-use-case";
+import { EmailValidatorSpy } from "./_test_/mocks/mock-email-validator";
 
 const makeSut = () => {
-    const mockedAuthUseCase = makeMockedAuthUseCase();
-    const mockedEmailValidator = makeMockedEmailValidator();
-    const sut = new LoginRouter(mockedAuthUseCase, mockedEmailValidator);
+    const authUseCaseSpy = new AuthUseCaseSpy();
+    const emailValidatorSpy = new EmailValidatorSpy();
+    const sut = new LoginRouter(authUseCaseSpy, emailValidatorSpy);
     return {
         sut,
-        mockedAuthUseCase,
-        mockedEmailValidator,
+        authUseCaseSpy,
+        emailValidatorSpy,
     }
-};
-
-const makeMockedAuthUseCase = () => {
-    return new AuthUseCase(
-        new MongoDBLoadUserByEmailRepository(),
-        new Bcrypt(), new Jwt('secret'),
-        new MongoDBUpdateAccessTokenRepository()
-    ) as jest.Mocked<AuthUseCase>;
-}
-
-const makeMockedEmailValidator = () => {
-    return new Validator() as jest.Mocked<Validator>;
 };
 
 describe('Login Router', () => {
@@ -52,12 +33,11 @@ describe('Login Router', () => {
     });
 
     it('Should return 400 if an invalid email is provided', async () => {
-        const { sut, mockedEmailValidator } = makeSut();
-        mockedEmailValidator.isValid.mockReturnValueOnce(false)
-
+        const { sut, emailValidatorSpy } = makeSut();
+        emailValidatorSpy.isEmailValid = false;
         const htppRequest = {
             body: {
-                email: 'invalid_email',
+                email: 'invalid@email.com',
                 password: 'valid_password'
             }
         };
@@ -67,11 +47,10 @@ describe('Login Router', () => {
     });
 
     it('Should return 400 if no password is provided', async () => {
-        const { sut, mockedEmailValidator } = makeSut();
-        mockedEmailValidator.isValid.mockReturnValueOnce(true);
+        const { sut } = makeSut();
         const htppRequest = {
             body: {
-                email: 'any_email'
+                email: 'any@email.com'
             }
         };
         const htppResponse = await sut.route(htppRequest);
@@ -80,12 +59,11 @@ describe('Login Router', () => {
     });
 
     it('Should return 401 when invalid credentials are provided', async () => {
-        const { sut, mockedAuthUseCase, mockedEmailValidator } = makeSut();
-        mockedAuthUseCase.auth.mockResolvedValueOnce(null);
-        mockedEmailValidator.isValid.mockReturnValueOnce(true);
+        const { sut, authUseCaseSpy } = makeSut();
+        authUseCaseSpy.token = null;
         const htppRequest = {
             body: {
-                email: 'invalid_email',
+                email: 'invalid@email.com',
                 password: 'invalid_password'
             }
         };
@@ -95,12 +73,10 @@ describe('Login Router', () => {
     });
 
     it('Should return 200 when valid credentials are provided', async () => {
-        const { sut, mockedAuthUseCase, mockedEmailValidator } = makeSut();
-        mockedAuthUseCase.auth.mockResolvedValueOnce('valid_token');
-        mockedEmailValidator.isValid.mockReturnValueOnce(true);
+        const { sut, } = makeSut();
         const htppRequest = {
             body: {
-                email: 'valid_email',
+                email: 'valid@email.com',
                 password: 'valid_password'
             }
         };
@@ -109,12 +85,13 @@ describe('Login Router', () => {
     });
 
     it('Should return 500 if AuthUseCase throws', async () => {
-        const { sut, mockedAuthUseCase, mockedEmailValidator } = makeSut();
-        mockedAuthUseCase.auth.mockRejectedValueOnce(null);
-        mockedEmailValidator.isValid.mockReturnValueOnce(true);
+        const { sut, authUseCaseSpy } = makeSut();
+        jest.spyOn(authUseCaseSpy, 'auth').mockImplementationOnce((): never => {
+            throw new Error();
+        });
         const htppRequest = {
             body: {
-                email: 'valid_email',
+                email: 'valid@email.com',
                 password: 'valid_password'
             }
         };
@@ -123,19 +100,45 @@ describe('Login Router', () => {
         expect(httpResponse.body).toEqual(new ServerError());
     });
 
-    // it('Should return 500 if EmailValidator throws', async () => {
-    //     const { mockedAuthUseCase, mockedEmailValidator } = makeSut();
-    //     mockedAuthUseCase.auth.mockResolvedValueOnce('valid_token');
-    //     mockedEmailValidator.isValid.mockReturnValueOnce(true);
-    //     const sut = new LoginRouter(mockedAuthUseCase, mockedEmailValidator);
-    //     const htppRequest = {
-    //         body: {
-    //             email: 'valid_email',
-    //             password: 'valid_password'
-    //         }
-    //     };
-    //     const httpResponse = await sut.route(htppRequest);
-    //     expect(httpResponse.statusCode).toBe(500);
-    //     expect(httpResponse.body).toEqual(new ServerError());
-    // });
+    it('Should return 500 if EmailValidator throws', async () => {
+        const { sut, emailValidatorSpy } = makeSut();
+        jest.spyOn(emailValidatorSpy, 'isValid').mockImplementationOnce((): never => {
+            throw new Error();
+        });
+        const htppRequest = {
+            body: {
+                email: 'valid@email.com',
+                password: 'valid_password'
+            }
+        };
+        const httpResponse = await sut.route(htppRequest);
+        expect(httpResponse.statusCode).toBe(500);
+        expect(httpResponse.body).toEqual(new ServerError());
+    });
+
+    it('Should calls EmailValidator with correct email', async () => {
+        const { sut, emailValidatorSpy } = makeSut();
+        const htppRequest = {
+            body: {
+                email: 'valid@email.com',
+                password: 'valid_password'
+            }
+        };
+        const email = jest.spyOn(emailValidatorSpy, 'isValid');
+        await sut.route(htppRequest);
+        expect(email).toHaveBeenCalledWith('valid@email.com');
+    });
+
+    it('Should calls AuthUseCase with correct values', async () => {
+        const { sut, authUseCaseSpy } = makeSut();
+        const htppRequest = {
+            body: {
+                email: 'valid@email.com',
+                password: 'valid_password'
+            }
+        };
+        const values = jest.spyOn(authUseCaseSpy, 'auth');
+        await sut.route(htppRequest);
+        expect(values).toHaveBeenCalledWith('valid@email.com', 'valid_password');
+    });
 });
