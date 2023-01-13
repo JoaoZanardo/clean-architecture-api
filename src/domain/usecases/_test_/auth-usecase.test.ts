@@ -44,27 +44,29 @@ describe('Auth Usecase', () => {
 
     it('Should calls LoadUserByEmailRepository with correct email', async () => {
         const { sut, mockedLoadUserByEmailRepository } = makeSut();
+        const email = jest.spyOn(mockedLoadUserByEmailRepository, 'load');
         await sut.auth('any_email@mail.com', 'any_password');
-        expect(mockedLoadUserByEmailRepository.email).toEqual('any_email@mail.com')
+        expect(email).toHaveBeenCalledWith('any_email@mail.com')
     });
 
     it('Should calls Encrypter with correct values', async () => {
         const { sut, mockedEncrypter } = makeSut();
+        const encrypterValues = jest.spyOn(mockedEncrypter, 'compare');
         await sut.auth('valid@email.com', 'any_password');
-        expect(mockedEncrypter.compareValues[0]).toEqual('any_password');
-        expect(mockedEncrypter.compareValues[1]).toEqual('any_password');
+        expect(encrypterValues).toHaveBeenCalledWith('any_password', 'any_password');
     });
 
     it('Should calls TokenGenerator with correct userId', async () => {
         const { sut, mockedTokenGenerator } = makeSut();
+        const id = jest.spyOn(mockedTokenGenerator, 'generate');
         await sut.auth('valid@email.com', 'any_password');
-        expect(mockedTokenGenerator.id).toEqual('any_id');
+        expect(id).toHaveBeenCalledWith('any_id');
     });
 
     it('Should calls UpdateAccessTokenRepository with correct values', async () => {
         const { sut, mockedUpdateAccessTokenRepository } = makeSut();
+        const updateValues = jest.spyOn(mockedUpdateAccessTokenRepository, 'update');
         await sut.auth('valid@email.com', 'any_password');
-        expect(mockedUpdateAccessTokenRepository.updateValue[0]).toEqual('any_id');
-        expect(mockedUpdateAccessTokenRepository.updateValue[1]).toEqual('valid_token');
+        expect(updateValues).toHaveBeenCalledWith('any_id', 'valid_token');
     });
 });
