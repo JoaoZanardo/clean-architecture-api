@@ -1,3 +1,4 @@
+import { throwError } from "../../domain/usecases/_test_/mocks";
 import {
     UnauthorizedError,
     ServerError,
@@ -86,9 +87,7 @@ describe('Login Router', () => {
 
     it('Should return 500 if AuthUseCase throws', async () => {
         const { sut, authUseCaseSpy } = makeSut();
-        jest.spyOn(authUseCaseSpy, 'auth').mockImplementationOnce((): never => {
-            throw new Error();
-        });
+        jest.spyOn(authUseCaseSpy, 'auth').mockImplementationOnce(throwError);
         const htppRequest = {
             body: {
                 email: 'valid@email.com',
@@ -102,9 +101,7 @@ describe('Login Router', () => {
 
     it('Should return 500 if EmailValidator throws', async () => {
         const { sut, emailValidatorSpy } = makeSut();
-        jest.spyOn(emailValidatorSpy, 'isValid').mockImplementationOnce((): never => {
-            throw new Error();
-        });
+        jest.spyOn(emailValidatorSpy, 'isValid').mockImplementationOnce(throwError);
         const htppRequest = {
             body: {
                 email: 'valid@email.com',
