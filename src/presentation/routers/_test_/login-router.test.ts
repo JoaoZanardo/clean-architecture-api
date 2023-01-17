@@ -5,7 +5,7 @@ import {
     MissingParamError,
     InvalidParamError,
 } from "../../errors";
-import { LoginRouter } from "../login-router";
+import { LoginRouter } from "../";
 import { AuthUseCaseSpy } from "./mocks/mock-auth-use-case";
 import { EmailValidatorSpy } from "./mocks/mock-email-validator";
 
