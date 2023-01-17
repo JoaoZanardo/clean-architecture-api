@@ -1,7 +1,7 @@
 import { Collection, Document } from "mongodb";
-import env from "../../main/config/env";
-import mongoHelper from "../helpers/mongo-helper";
-import { MongoDBUpdateAccessTokenRepository } from "./mongo-update-access-token-repository";
+import env from "../../../main/config/env";
+import mongoHelper from "../../helpers/mongo-helper";
+import { MongoDBUpdateAccessTokenRepository } from "../";
 
 const makeSut = () => {
     return new MongoDBUpdateAccessTokenRepository();

@@ -1,7 +1,7 @@
 import { Collection, Document } from 'mongodb';
-import env from '../../main/config/env';
-import mongoHelper from '../helpers/mongo-helper';
-import { MongoDBLoadUserByEmailRepository } from './mongo-load-user-by-email-repository';
+import env from '../../../main/config/env';
+import mongoHelper from '../../helpers/mongo-helper';
+import { MongoDBLoadUserByEmailRepository } from '../';
 
 const makeSut = () => {
     return new MongoDBLoadUserByEmailRepository();

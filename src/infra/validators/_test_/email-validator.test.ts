@@ -1,4 +1,4 @@
-import { Validator } from '../validator';
+import { Validator } from '../';
 import validator from 'validator';
 
 interface MockedValidator {

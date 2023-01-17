@@ -1,10 +1,8 @@
 import { AuthUseCaseService } from "../../data/usecases";
-import { MongoDBLoadUserByEmailRepository } from "../../infra/repositories/mongo-load-user-by-email-repository";
-import { MongoDBUpdateAccessTokenRepository } from "../../infra/repositories/mongo-update-access-token-repository";
+import { MongoDBLoadUserByEmailRepository, MongoDBUpdateAccessTokenRepository } from "../../infra/repositories";
 import { LoginRouter } from "../../presentation/routers/login-router";
-import { Bcrypt } from "../../infra/cryptography/bcrypt";
-import { Jwt } from "../../infra/cryptography/jwt";
-import { Validator } from "../../infra/validators/validator";
+import { Bcrypt, Jwt } from "../../infra/cryptography";
+import { Validator } from "../../infra/validators";
 import env from "../config/env";
 
 export class LoginRouterCompose {
