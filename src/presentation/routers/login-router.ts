@@ -1,6 +1,6 @@
 import { HttpResponse } from "../helpers/http-response";
 import { InvalidParamError, MissingParamError } from "../errors";
-import { EmailValidator } from "../../interfaces/email-validator";
+import { EmailValidator } from "../../validations/protocols";
 import { HttpRequest } from "../../interfaces/router";
 import { AuthUseCase } from "../../domain/usecases";
 
