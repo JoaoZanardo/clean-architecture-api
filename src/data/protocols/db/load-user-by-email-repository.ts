@@ -1,3 +1,5 @@
-export interface LoadUserByEmailRepository<T> {
-    load: (email: string) => Promise<T | null>;
+import { UserModel } from "../models";
+
+export interface LoadUserByEmailRepository {
+    load: (email: string) => Promise<UserModel | null>;
 }

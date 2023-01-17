@@ -1,10 +1,10 @@
 import { UpdateAccessTokenRepository, LoadUserByEmailRepository } from "../../protocols/db";
-import { User } from "../../../interfaces/user";
+import { UserModel } from "../../protocols/models";
 
-export class LoadUserByEmailRepositorySpy implements LoadUserByEmailRepository<User | null> {
-    public user: null | User = { id: 'any_id', password: 'any_password' };
+export class LoadUserByEmailRepositorySpy implements LoadUserByEmailRepository {
+    public user: null | UserModel = { id: 'any_id', password: 'any_password' };
 
-    async load(email: string): Promise<User | null> {
+    async load(email: string): Promise<UserModel | null> {
         return this.user
     }
 }

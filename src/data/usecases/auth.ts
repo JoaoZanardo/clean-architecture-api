@@ -1,11 +1,10 @@
 import { Encrypter, TokenGenerator } from "../protocols/cryptography";
 import { LoadUserByEmailRepository, UpdateAccessTokenRepository } from "../protocols/db";
-import { User } from "../../interfaces/user";
 import { AuthUseCase } from "../../domain/usecases";
 
 export class AuthUseCaseService implements AuthUseCase {
     constructor(
-        private loadUserByEmailRepo: LoadUserByEmailRepository<User>,
+        private loadUserByEmailRepo: LoadUserByEmailRepository,
         private encrypter: Encrypter,
         private tokenGenerator: TokenGenerator,
         private updateAccessTokenRepo: UpdateAccessTokenRepository
