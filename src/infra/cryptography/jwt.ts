@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { TokenGenerator } from "../../interfaces/token-generator";
+import { TokenGenerator } from "../../data/protocols/cryptography";
 
 export class Jwt implements TokenGenerator {
     constructor(private secret: string) { }

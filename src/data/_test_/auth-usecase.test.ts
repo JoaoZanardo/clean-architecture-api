@@ -1,4 +1,4 @@
-import { AuthUseCase } from "../auth-usecase";
+import { AuthUseCaseService } from "../usecases/auth";
 import {
     EncrypterSpy,
     LoadUserByEmailRepositorySpy,
@@ -14,7 +14,7 @@ const makeSut = () => {
     const mockedUpdateAccessTokenRepository = new UpdateAccessTokenRepositorySpy();
     return {
         mockedLoadUserByEmailRepository,
-        sut: new AuthUseCase(mockedLoadUserByEmailRepository, mockedEncrypter, mockedTokenGenerator, mockedUpdateAccessTokenRepository),
+        sut: new AuthUseCaseService(mockedLoadUserByEmailRepository, mockedEncrypter, mockedTokenGenerator, mockedUpdateAccessTokenRepository),
         mockedEncrypter,
         mockedTokenGenerator,
         mockedUpdateAccessTokenRepository

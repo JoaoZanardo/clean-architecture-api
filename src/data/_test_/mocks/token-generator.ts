@@ -1,4 +1,4 @@
-import { TokenGenerator } from "../../../../interfaces/token-generator";
+import { TokenGenerator } from "../../protocols/cryptography";
 
 export class TokenGeneratorSpy implements TokenGenerator {
 

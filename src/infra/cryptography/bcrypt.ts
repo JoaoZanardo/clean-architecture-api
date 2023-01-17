@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { Encrypter } from '../../interfaces/encrypter';
+import { Encrypter } from '../../data/protocols/cryptography';
 
 export class Bcrypt implements Encrypter {
     async compare(value: string, hash: string): Promise<boolean> {

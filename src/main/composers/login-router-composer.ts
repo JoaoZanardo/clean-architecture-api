@@ -1,4 +1,4 @@
-import { AuthUseCase } from "../../domain/usecases/auth-usecase";
+import { AuthUseCaseService } from "../../data/usecases";
 import { MongoDBLoadUserByEmailRepository } from "../../infra/repositories/mongo-load-user-by-email-repository";
 import { MongoDBUpdateAccessTokenRepository } from "../../infra/repositories/mongo-update-access-token-repository";
 import { LoginRouter } from "../../presentation/routers/login-router";
@@ -13,7 +13,7 @@ export class LoginRouterCompose {
         const bcrypt = new Bcrypt();
         const loadUserByEmailRepository = new MongoDBLoadUserByEmailRepository();
         const updateAccessTokenRepository = new MongoDBUpdateAccessTokenRepository();
-        const authUseCase = new AuthUseCase(
+        const authUseCase = new AuthUseCaseService(
             loadUserByEmailRepository,
             bcrypt,
             jwt,

@@ -1,13 +1,13 @@
-import { throwError } from "../../domain/usecases/_test_/mocks";
+import { throwError } from "../../../data/_test_/helper-test";
 import {
     UnauthorizedError,
     ServerError,
     MissingParamError,
     InvalidParamError,
-} from "../errors";
-import { LoginRouter } from "./login-router";
-import { AuthUseCaseSpy } from "./_test_/mocks/mock-auth-use-case";
-import { EmailValidatorSpy } from "./_test_/mocks/mock-email-validator";
+} from "../../errors";
+import { LoginRouter } from "../login-router";
+import { AuthUseCaseSpy } from "./mocks/mock-auth-use-case";
+import { EmailValidatorSpy } from "./mocks/mock-email-validator";
 
 const makeSut = () => {
     const authUseCaseSpy = new AuthUseCaseSpy();

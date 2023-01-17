@@ -1,4 +1,4 @@
-import { Encrypter } from "../../../../interfaces/encrypter";
+import { Encrypter } from "../../protocols/cryptography";
 
 export class EncrypterSpy implements Encrypter {
     public isValid: boolean = true;

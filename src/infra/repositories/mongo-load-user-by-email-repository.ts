@@ -1,6 +1,6 @@
-import { LoadUserByEmailRepository } from "../../interfaces/load-user-by-email-repository";
+import { LoadUserByEmailRepository } from "../../data/protocols/db";
 import mongoHelper from "../helpers/mongo-helper";
-import { User } from "src/interfaces/user";
+import { User } from "../../interfaces/user";
 
 export class MongoDBLoadUserByEmailRepository implements LoadUserByEmailRepository<User | null> {
     async load(email: string): Promise<User | null> {
