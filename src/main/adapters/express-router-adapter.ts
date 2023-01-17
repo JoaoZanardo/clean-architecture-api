@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Router } from "../../interfaces/router";
+import { Router } from "../../presentation/protocols";
 
 type ExpressFunction = (req: Request, res: Response) => Promise<void>;
 
