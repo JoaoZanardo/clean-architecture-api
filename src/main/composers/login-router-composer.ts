@@ -2,9 +2,9 @@ import { AuthUseCase } from "../../domain/usecases/auth-usecase";
 import { MongoDBLoadUserByEmailRepository } from "../../infra/repositories/mongo-load-user-by-email-repository";
 import { MongoDBUpdateAccessTokenRepository } from "../../infra/repositories/mongo-update-access-token-repository";
 import { LoginRouter } from "../../presentation/routers/login-router";
-import { Bcrypt } from "../../utils/bcrypt";
-import { Jwt } from "../../utils/jwt";
-import { Validator } from "../../utils/validator";
+import { Bcrypt } from "../../infra/cryptography/bcrypt";
+import { Jwt } from "../../infra/cryptography/jwt";
+import { Validator } from "../../infra/validators/validator";
 import env from "../config/env";
 
 export class LoginRouterCompose {

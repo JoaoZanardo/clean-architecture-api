@@ -1,4 +1,4 @@
-import { Jwt } from "./jwt";
+import { Jwt } from "../jwt";
 import jwt from 'jsonwebtoken';
 
 interface MockedJwt {

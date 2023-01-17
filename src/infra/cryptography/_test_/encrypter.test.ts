@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { Bcrypt } from './bcrypt';
+import { Bcrypt } from '../bcrypt';
 
 interface MockedBcrypt {
     isValid: boolean;
