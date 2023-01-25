@@ -6,6 +6,7 @@ type Request = {
     body: {
         name?: string
         email?: string;
+        password?: string;
     }
 }
 
@@ -13,12 +14,13 @@ class SignUpRouter {
     constructor(private emailValidator: EmailValidatorSpy) { }
 
     async handle(request: Request): Promise<HttpResponse> {
-        const { email, name } = request.body
+        const { email, name, password } = request.body
         if (!name) return HttpResponse.badRequest(new MissingParamError('name'));
         if (!email) return HttpResponse.badRequest(new MissingParamError('email'));
         if (!this.emailValidator.isValid(email)) {
             return HttpResponse.badRequest(new InvalidParamError('email'));
         }
+        if (!password) return HttpResponse.badRequest(new MissingParamError('password'));
         return HttpResponse.ok({});
     }
 }
@@ -69,5 +71,18 @@ describe('SignUp Router', () => {
         const response = await sut.handle(httpRequest);
         expect(response.statusCode).toEqual(400);
         expect(response.body).toEqual(new InvalidParamError('email'));
+    });
+
+    it('Should returns 400 if no password is provided', async () => {
+        const { sut } = makeSut();
+        const httpRequest = {
+            body: {
+                name: 'any_name',
+                email: 'valid_email'
+            }
+        }
+        const response = await sut.handle(httpRequest);
+        expect(response.statusCode).toEqual(400);
+        expect(response.body).toEqual(new MissingParamError('password'));
     });
 });
