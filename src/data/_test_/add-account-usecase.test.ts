@@ -1,43 +1,21 @@
+import { AddAcountUseCaseService } from "../usecases";
 import { AddAccountRepositorySpy, EncrypterSpy, LoadUserByEmailRepositorySpy } from "./mocks";
-
-type Params = {
-    name: string;
-    email: string;
-    password: string;
-}
-
-class AddAcountUseCaseService {
-    constructor(
-        private loadUserByEmailRepo: LoadUserByEmailRepositorySpy,
-        private addAccountRepository: AddAccountRepositorySpy,
-        private Encrypter: EncrypterSpy
-    ) { }
-
-    async add(params: Params): Promise<boolean> {
-        const exists = await this.loadUserByEmailRepo.load(params.email);
-        let isValid = false
-        if (!exists) {
-            const hashedPassword = await this.Encrypter.hash(params.password);
-            isValid = await this.addAccountRepository.add({ ...params, password: hashedPassword });
-        }
-        return isValid;
-    }
-}
 
 const makeSut = () => {
     const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy();
     loadUserByEmailRepositorySpy.user = null;
     const addAccountRepository = new AddAccountRepositorySpy();
     const encrypter = new EncrypterSpy();
+    const sut = new AddAcountUseCaseService(
+        loadUserByEmailRepositorySpy,
+        addAccountRepository,
+        encrypter
+    );
     return {
         loadUserByEmailRepositorySpy,
         addAccountRepository,
         encrypter,
-        sut: new AddAcountUseCaseService(
-            loadUserByEmailRepositorySpy,
-            addAccountRepository,
-            encrypter
-        )
+        sut
     }
 }
 
