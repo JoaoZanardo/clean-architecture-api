@@ -1,4 +1,4 @@
-import { AddAccountRepository } from "../../protocols/db/add-account-repository";
+import { AddAccountRepository } from "../../protocols/db";
 import { UpdateAccessTokenRepository, LoadUserByEmailRepository } from "../../protocols/db";
 import { UserModel } from "../../protocols/models";
 
