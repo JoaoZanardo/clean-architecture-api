@@ -23,6 +23,7 @@ class SignUpRouter {
         }
         if (!password) return HttpResponse.badRequest(new MissingParamError('password'));
         if (!passwordConfirmation) return HttpResponse.badRequest(new MissingParamError('passwordConfirmation'));
+        if (password !== passwordConfirmation) return HttpResponse.badRequest(new InvalidParamError('password'));
         return HttpResponse.ok({});
     }
 }
@@ -100,5 +101,35 @@ describe('SignUp Router', () => {
         const response = await sut.handle(httpRequest);
         expect(response.statusCode).toEqual(400);
         expect(response.body).toEqual(new MissingParamError('passwordConfirmation'));
+    });
+
+    it('Should return 400 if the passwords do not match', async () => {
+        const { sut } = makeSut();
+        const httpRequest = {
+            body: {
+                name: 'any_name',
+                email: 'valid_email',
+                password: 'password',
+                passwordConfirmation: 'passwordConfirmation'
+            }
+        }
+        const httpResponse = await sut.handle(httpRequest);
+        expect(httpResponse.statusCode).toEqual(400);
+        expect(httpResponse.body).toEqual(new InvalidParamError('password'));
+    });
+
+    it('Should calls emailValidator with correct email', async () => {
+        const { sut, emailValidator } = makeSut();
+        const email = jest.spyOn(emailValidator, 'isValid');
+        const httpRequest = {
+            body: {
+                name: 'any_name',
+                email: 'valid_email',
+                password: 'password',
+                passwordConfirmation: 'passwordConfirmation'
+            }
+        }
+        await sut.handle(httpRequest);
+        expect(email).toHaveBeenCalledWith('valid_email');
     });
 });
