@@ -1,3 +1,4 @@
+import { AddAccountRepository } from "../../protocols/db/add-account-repository";
 import { UpdateAccessTokenRepository, LoadUserByEmailRepository } from "../../protocols/db";
 import { UserModel } from "../../protocols/models";
 
@@ -13,5 +14,11 @@ export class UpdateAccessTokenRepositorySpy implements UpdateAccessTokenReposito
 
     async update(userId: string, token: string | null): Promise<void> {
         return;
+    }
+}
+
+export class AddAccountRepositorySpy implements AddAccountRepository {
+    async add(params: AddAccountRepository.Params): Promise<AddAccountRepository.Result> {
+        return true;
     }
 }
