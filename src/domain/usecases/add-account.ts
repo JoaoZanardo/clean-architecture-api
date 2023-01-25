@@ -1,4 +1,4 @@
-export interface AddAcount {
+export interface AddAccount {
     add: (account: AddAccount.Params) => Promise<AddAccount.Result>
 }
 
