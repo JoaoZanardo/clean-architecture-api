@@ -52,4 +52,11 @@ describe('AddAccount Usecase', () => {
         await sut.add(params);
         expect(value).toHaveBeenCalledWith('any_password');
     });
+
+    it('Should calls LoadUserByEmailRepository with correct value', async () => {
+        const { sut, loadUserByEmailRepositorySpy } = makeSut();
+        const value = jest.spyOn(loadUserByEmailRepositorySpy, 'load');
+        await sut.add(params);
+        expect(value).toHaveBeenCalledWith('valid_email');
+    });
 });
