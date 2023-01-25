@@ -169,4 +169,11 @@ describe('SignUp Router', () => {
             password: 'password'
         });
     });
+
+    it('Should throws if AddAccountUseCase throws', async () => {
+        const { sut, addAccountUseCase } = makeSut();
+        jest.spyOn(addAccountUseCase, 'add').mockImplementationOnce(throwError);
+        const promise = sut.handle(validHttpRequest);
+        await expect(promise).rejects.toThrow();
+    });
 });
