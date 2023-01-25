@@ -2,7 +2,7 @@ import { HttpResponse } from "../../protocols";
 import { MissingParamError, InvalidParamError, ForbidenError } from "../../errors";
 import { EmailValidatorSpy } from "./mocks/mock-email-validator";
 import { throwError } from '../../../data/_test_/helper-test';
-import { AddAccountUseCase } from "./mocks/mock-add-account-use-case";
+import { AddAccountUseCaseSpy } from "./mocks/mock-add-account-use-case";
 
 type Request = {
     body: {
@@ -16,7 +16,7 @@ type Request = {
 class SignUpRouter {
     constructor(
         private emailValidator: EmailValidatorSpy,
-        private addAccountUseCase: AddAccountUseCase
+        private addAccountUseCase: AddAccountUseCaseSpy
     ) { }
 
     async handle(request: Request): Promise<HttpResponse> {
@@ -39,7 +39,7 @@ class SignUpRouter {
 
 const makeSut = () => {
     const emailValidator = new EmailValidatorSpy();
-    const addAccountUseCase = new AddAccountUseCase();
+    const addAccountUseCase = new AddAccountUseCaseSpy();
     const sut = new SignUpRouter(emailValidator, addAccountUseCase);
     return {
         addAccountUseCase,
