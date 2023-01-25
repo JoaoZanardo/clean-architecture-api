@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && node dist/src/main/index",
+    "start": "node dist/src/main/index",
+    "build": "tsc",
     "test": "jest --noStackTrace --runInBand --forceExit",
     "test:unit": "npm test -- -c jest.config.js",
     "test:integration": "npm test -- -c test/jest.config.js"
@@ -30,7 +31,8 @@
     "@types/supertest": "^2.0.12",
     "@types/validator": "^13.7.10",
     "jest": "^29.3.1",
-    "ts-jest": "^29.0.3"
+    "ts-jest": "^29.0.3",
+    "typescript": "^4.9.4"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
