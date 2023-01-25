@@ -4,9 +4,10 @@ import { EmailValidatorSpy } from "./mocks/mock-email-validator";
 
 type Request = {
     body: {
-        name?: string
+        name?: string;
         email?: string;
         password?: string;
+        passwordConfirmation?: string;
     }
 }
 
@@ -14,13 +15,14 @@ class SignUpRouter {
     constructor(private emailValidator: EmailValidatorSpy) { }
 
     async handle(request: Request): Promise<HttpResponse> {
-        const { email, name, password } = request.body
+        const { email, name, password, passwordConfirmation } = request.body
         if (!name) return HttpResponse.badRequest(new MissingParamError('name'));
         if (!email) return HttpResponse.badRequest(new MissingParamError('email'));
         if (!this.emailValidator.isValid(email)) {
             return HttpResponse.badRequest(new InvalidParamError('email'));
         }
         if (!password) return HttpResponse.badRequest(new MissingParamError('password'));
+        if (!passwordConfirmation) return HttpResponse.badRequest(new MissingParamError('passwordConfirmation'));
         return HttpResponse.ok({});
     }
 }
@@ -84,5 +86,19 @@ describe('SignUp Router', () => {
         const response = await sut.handle(httpRequest);
         expect(response.statusCode).toEqual(400);
         expect(response.body).toEqual(new MissingParamError('password'));
+    });
+
+    it('Should returns 400 if no passwordConfirmation is provided', async () => {
+        const { sut } = makeSut();
+        const httpRequest = {
+            body: {
+                name: 'any_name',
+                email: 'valid_email',
+                password: 'any_password'
+            }
+        }
+        const response = await sut.handle(httpRequest);
+        expect(response.statusCode).toEqual(400);
+        expect(response.body).toEqual(new MissingParamError('passwordConfirmation'));
     });
 });
