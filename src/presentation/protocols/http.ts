@@ -1,4 +1,8 @@
-import { ServerError, UnauthorizedError } from "../errors";
+import {
+    ForbidenError,
+    ServerError,
+    UnauthorizedError
+} from "../errors";
 
 export interface HttpResponse {
     statusCode: number;
@@ -31,6 +35,13 @@ export class HttpResponse {
         return {
             statusCode: 200,
             body: data
+        }
+    }
+
+    static forbiden(): HttpResponse {
+        return {
+            statusCode: 403,
+            body: new ForbidenError()
         }
     }
 }

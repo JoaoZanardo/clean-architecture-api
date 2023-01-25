@@ -1,7 +1,8 @@
 import { HttpResponse } from "../../protocols";
-import { MissingParamError, InvalidParamError } from "../../errors";
+import { MissingParamError, InvalidParamError, ForbidenError } from "../../errors";
 import { EmailValidatorSpy } from "./mocks/mock-email-validator";
 import { throwError } from '../../../data/_test_/helper-test';
+import { AddAccountUseCase } from "./mocks/mock-add-account-use-case";
 
 type Request = {
     body: {
@@ -13,7 +14,10 @@ type Request = {
 }
 
 class SignUpRouter {
-    constructor(private emailValidator: EmailValidatorSpy) { }
+    constructor(
+        private emailValidator: EmailValidatorSpy,
+        private addAccountUseCase: AddAccountUseCase
+    ) { }
 
     async handle(request: Request): Promise<HttpResponse> {
         const { email, name, password, passwordConfirmation } = request.body
@@ -25,20 +29,35 @@ class SignUpRouter {
         if (!password) return HttpResponse.badRequest(new MissingParamError('password'));
         if (!passwordConfirmation) return HttpResponse.badRequest(new MissingParamError('passwordConfirmation'));
         if (password !== passwordConfirmation) return HttpResponse.badRequest(new InvalidParamError('password'));
+
+        const isValid = await this.addAccountUseCase.add({ name, email, password });
+        if (!isValid) return HttpResponse.forbiden();
+
         return HttpResponse.ok({});
     }
 }
 
 const makeSut = () => {
     const emailValidator = new EmailValidatorSpy();
-    const sut = new SignUpRouter(emailValidator);
+    const addAccountUseCase = new AddAccountUseCase();
+    const sut = new SignUpRouter(emailValidator, addAccountUseCase);
     return {
+        addAccountUseCase,
         emailValidator,
         sut
     }
 }
 
 describe('SignUp Router', () => {
+    const validHttpRequest = {
+        body: {
+            name: 'any_name',
+            email: 'valid_email',
+            password: 'password',
+            passwordConfirmation: 'password'
+        }
+    }
+
     it('Should returns 400 if no name is provided', async () => {
         const { sut } = makeSut();
         const httpRequest = {
@@ -104,13 +123,13 @@ describe('SignUp Router', () => {
         expect(response.body).toEqual(new MissingParamError('passwordConfirmation'));
     });
 
-    it('Should return 400 if the passwords do not match', async () => {
+    it('Should returns 400 if the passwords do not match', async () => {
         const { sut } = makeSut();
         const httpRequest = {
             body: {
                 name: 'any_name',
                 email: 'valid_email',
-                password: 'password',
+                password: 'any_password',
                 passwordConfirmation: 'passwordConfirmation'
             }
         }
@@ -122,30 +141,21 @@ describe('SignUp Router', () => {
     it('Should calls EmailValidator with correct email', async () => {
         const { sut, emailValidator } = makeSut();
         const email = jest.spyOn(emailValidator, 'isValid');
-        const httpRequest = {
-            body: {
-                name: 'any_name',
-                email: 'valid_email',
-                password: 'password',
-                passwordConfirmation: 'passwordConfirmation'
-            }
-        }
-        await sut.handle(httpRequest);
+        await sut.handle(validHttpRequest);
         expect(email).toHaveBeenCalledWith('valid_email');
     });
 
     it('Should throws if EmailValidator throws', async () => {
         const { sut, emailValidator } = makeSut();
         jest.spyOn(emailValidator, 'isValid').mockImplementationOnce(throwError);
-        const httpRequest = {
-            body: {
-                name: 'any_name',
-                email: 'valid_email',
-                password: 'password',
-                passwordConfirmation: 'passwordConfirmation'
-            }
-        }
-        const promise = sut.handle(httpRequest);
+        const promise = sut.handle(validHttpRequest);
         await expect(promise).rejects.toThrow();
+    });
+
+    it('Should returns 403 if AddAccountUseCase returns false', async () => {
+        const { sut } = makeSut();
+        const httpResponse = await sut.handle(validHttpRequest);
+        expect(httpResponse.statusCode).toEqual(403);
+        expect(httpResponse.body).toEqual(new ForbidenError());
     });
 });
