@@ -140,9 +140,9 @@ describe('SignUp Router', () => {
 
     it('Should calls EmailValidator with correct email', async () => {
         const { sut, emailValidator } = makeSut();
-        const email = jest.spyOn(emailValidator, 'isValid');
+        const isValidMethod = jest.spyOn(emailValidator, 'isValid');
         await sut.handle(validHttpRequest);
-        expect(email).toHaveBeenCalledWith('valid_email');
+        expect(isValidMethod).toHaveBeenCalledWith('valid_email');
     });
 
     it('Should throws if EmailValidator throws', async () => {
@@ -157,5 +157,16 @@ describe('SignUp Router', () => {
         const httpResponse = await sut.handle(validHttpRequest);
         expect(httpResponse.statusCode).toEqual(403);
         expect(httpResponse.body).toEqual(new ForbidenError());
+    });
+
+    it('Should calls AddAccountUseCase with correct values', async () => {
+        const { sut, addAccountUseCase } = makeSut();
+        const addMethod = jest.spyOn(addAccountUseCase, 'add');
+        await sut.handle(validHttpRequest);
+        expect(addMethod).toHaveBeenCalledWith({
+            name: 'any_name',
+            email: 'valid_email',
+            password: 'password'
+        });
     });
 });
