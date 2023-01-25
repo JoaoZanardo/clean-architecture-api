@@ -1,6 +1,7 @@
 import { HttpResponse } from "../../protocols";
 import { MissingParamError, InvalidParamError } from "../../errors";
 import { EmailValidatorSpy } from "./mocks/mock-email-validator";
+import { throwError } from '../../../data/_test_/helper-test';
 
 type Request = {
     body: {
@@ -118,7 +119,7 @@ describe('SignUp Router', () => {
         expect(httpResponse.body).toEqual(new InvalidParamError('password'));
     });
 
-    it('Should calls emailValidator with correct email', async () => {
+    it('Should calls EmailValidator with correct email', async () => {
         const { sut, emailValidator } = makeSut();
         const email = jest.spyOn(emailValidator, 'isValid');
         const httpRequest = {
@@ -131,5 +132,20 @@ describe('SignUp Router', () => {
         }
         await sut.handle(httpRequest);
         expect(email).toHaveBeenCalledWith('valid_email');
+    });
+
+    it('Should throws if EmailValidator throws', async () => {
+        const { sut, emailValidator } = makeSut();
+        jest.spyOn(emailValidator, 'isValid').mockImplementationOnce(throwError);
+        const httpRequest = {
+            body: {
+                name: 'any_name',
+                email: 'valid_email',
+                password: 'password',
+                passwordConfirmation: 'passwordConfirmation'
+            }
+        }
+        const promise = sut.handle(httpRequest);
+        await expect(promise).rejects.toThrow();
     });
 });
