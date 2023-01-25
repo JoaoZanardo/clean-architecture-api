@@ -1,4 +1,4 @@
-import { AddAccountRepositorySpy, LoadUserByEmailRepositorySpy } from "./mocks";
+import { AddAccountRepositorySpy, EncrypterSpy, LoadUserByEmailRepositorySpy } from "./mocks";
 
 type Params = {
     name: string;
@@ -9,14 +9,16 @@ type Params = {
 class AddAcountUseCaseService {
     constructor(
         private loadUserByEmailRepo: LoadUserByEmailRepositorySpy,
-        private addAccountRepository: AddAccountRepositorySpy
+        private addAccountRepository: AddAccountRepositorySpy,
+        private Encrypter: EncrypterSpy
     ) { }
 
     async add(params: Params): Promise<boolean> {
         const exists = await this.loadUserByEmailRepo.load(params.email);
         let isValid = false
         if (!exists) {
-            isValid = await this.addAccountRepository.add(params)
+            const hashedPassword = await this.Encrypter.hash(params.password);
+            isValid = await this.addAccountRepository.add({ ...params, password: hashedPassword });
         }
         return isValid;
     }
@@ -26,12 +28,15 @@ const makeSut = () => {
     const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy();
     loadUserByEmailRepositorySpy.user = null;
     const addAccountRepository = new AddAccountRepositorySpy();
+    const encrypter = new EncrypterSpy();
     return {
         loadUserByEmailRepositorySpy,
         addAccountRepository,
+        encrypter,
         sut: new AddAcountUseCaseService(
             loadUserByEmailRepositorySpy,
-            addAccountRepository
+            addAccountRepository,
+            encrypter
         )
     }
 }
@@ -60,6 +65,13 @@ describe('AddAccount Usecase', () => {
         const { sut, addAccountRepository } = makeSut();
         const values = jest.spyOn(addAccountRepository, 'add')
         await sut.add(params);
-        expect(values).toHaveBeenCalledWith(params);
+        expect(values).toHaveBeenCalledWith({ ...params, password: 'hashed_value' });
+    });
+
+    it('Should calls Encrypter with correct value', async () => {
+        const { sut, encrypter } = makeSut();
+        const value = jest.spyOn(encrypter, 'hash');
+        await sut.add(params);
+        expect(value).toHaveBeenCalledWith('any_password');
     });
 });
