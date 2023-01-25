@@ -121,9 +121,9 @@ describe('Login Router', () => {
                 password: 'valid_password'
             }
         };
-        const email = jest.spyOn(emailValidatorSpy, 'isValid');
+        const isValidMethod = jest.spyOn(emailValidatorSpy, 'isValid');
         await sut.route(htppRequest);
-        expect(email).toHaveBeenCalledWith('valid@email.com');
+        expect(isValidMethod).toHaveBeenCalledWith('valid@email.com');
     });
 
     it('Should calls AuthUseCase with correct values', async () => {
@@ -134,8 +134,8 @@ describe('Login Router', () => {
                 password: 'valid_password'
             }
         };
-        const values = jest.spyOn(authUseCaseSpy, 'auth');
+        const authMethod = jest.spyOn(authUseCaseSpy, 'auth');
         await sut.route(htppRequest);
-        expect(values).toHaveBeenCalledWith('valid@email.com', 'valid_password');
+        expect(authMethod).toHaveBeenCalledWith('valid@email.com', 'valid_password');
     });
 });

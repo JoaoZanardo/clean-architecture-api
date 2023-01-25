@@ -41,22 +41,22 @@ describe('AddAccount Usecase', () => {
 
     it('Should calls AddAccountRepository with correct values', async () => {
         const { sut, addAccountRepository } = makeSut();
-        const values = jest.spyOn(addAccountRepository, 'add')
+        const addMethod = jest.spyOn(addAccountRepository, 'add')
         await sut.add(params);
-        expect(values).toHaveBeenCalledWith({ ...params, password: 'hashed_value' });
+        expect(addMethod).toHaveBeenCalledWith({ ...params, password: 'hashed_value' });
     });
 
     it('Should calls Encrypter with correct password', async () => {
         const { sut, encrypter } = makeSut();
-        const password = jest.spyOn(encrypter, 'hash');
+        const hashMethod = jest.spyOn(encrypter, 'hash');
         await sut.add(params);
-        expect(password).toHaveBeenCalledWith('any_password');
+        expect(hashMethod).toHaveBeenCalledWith('any_password');
     });
 
     it('Should calls LoadUserByEmailRepository with correct email', async () => {
         const { sut, loadUserByEmailRepositorySpy } = makeSut();
-        const email = jest.spyOn(loadUserByEmailRepositorySpy, 'load');
+        const loadMethod = jest.spyOn(loadUserByEmailRepositorySpy, 'load');
         await sut.add(params);
-        expect(email).toHaveBeenCalledWith('valid_email');
+        expect(loadMethod).toHaveBeenCalledWith('valid_email');
     });
 });
