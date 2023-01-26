@@ -21,27 +21,75 @@ describe('Login Routes', () => {
         await mongoHelper.disconnect();
     });
 
-    it('Should return 200 when valid creditials are provided', async () => {
-        await userModel.insertOne({
-            email: 'valid@email.com',
-            password: await bcrypt.hash('valid_password', 10)
+    describe('/login', () => {
+        it('Should return 200 when valid creditials are provided', async () => {
+            await userModel.insertOne({
+                email: 'valid@email.com',
+                password: await bcrypt.hash('valid_password', 10)
+            });
+
+            await agent(app)
+                .post('/api/login')
+                .send({ email: 'valid@email.com', password: 'valid_password' })
+                .expect(200);
         });
 
-        await agent(app)
-            .post('/api/login')
-            .send({ email: 'valid@email.com', password: 'valid_password' })
-            .expect(200);
+        it('Should return 400 when no credentials are provided', async () => {
+            await agent(app)
+                .post('/api/login')
+                .send({})
+                .expect(400);
+        });
+
+        it('Should return 401 when invalid credentials are provided', async () => {
+            await userModel.insertOne({
+                email: 'invalid_email',
+                password: await bcrypt.hash('valid_password', 10)
+            });
+
+            await agent(app)
+                .post('/api/login')
+                .send({ email: 'valid@email.com', password: 'valid_password' })
+                .expect(401);
+        });
     });
 
-    it('Should return 400 when invalid credentials are provided', async () => {
-        await userModel.insertOne({
-            email: 'invalid_email',
-            password: await bcrypt.hash('valid_password', 10)
+    describe('/signup', () => {
+        it('Should return 200 when valid creditials are provided', async () => {
+            await agent(app)
+                .post('/api/signup')
+                .send({
+                    name: 'any_name',
+                    email: 'valid@email.com',
+                    password: 'password',
+                    passwordConfirmation: 'password'
+                })
+                .expect(200);
         });
 
-        await agent(app)
-            .post('/api/login')
-            .send({ email: 'valid@email.com', password: 'valid_password' })
-            .expect(401);
+        it('Should return 400 when invalid credentials are provided', async () => {
+            await agent(app)
+                .post('/api/signup')
+                .send({})
+                .expect(400);
+        });
+
+        it('Should return 403 if user already exists', async () => {
+            await userModel.insertOne({
+                name: 'any_name',
+                email: 'any@email.com',
+                password: await bcrypt.hash('valid_password', 10),
+            });
+
+            await agent(app)
+                .post('/api/signup')
+                .send({
+                    name: 'any_name',
+                    email: 'any@email.com',
+                    password: 'password',
+                    passwordConfirmation: 'password'
+                })
+                .expect(403);
+        });
     });
 });
