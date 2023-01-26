@@ -1,4 +1,3 @@
-import { HttpResponse } from "../../protocols";
 import {
     MissingParamError,
     InvalidParamError,
@@ -9,43 +8,7 @@ import { EmailValidatorSpy } from "./mocks/mock-email-validator";
 import { throwError } from '../../../data/_test_/helper-test';
 import { AddAccountUseCaseSpy } from "./mocks/mock-add-account-use-case";
 import { AuthUseCaseSpy } from "./mocks/mock-auth-use-case";
-
-type Request = {
-    body: {
-        name?: string;
-        email?: string;
-        password?: string;
-        passwordConfirmation?: string;
-    }
-}
-
-class SignUpRouter {
-    constructor(
-        private emailValidator: EmailValidatorSpy,
-        private addAccountUseCase: AddAccountUseCaseSpy,
-        private authUseCase: AuthUseCaseSpy
-    ) { }
-
-    async handle(request: Request): Promise<HttpResponse> {
-        const { email, name, password, passwordConfirmation } = request.body
-        if (!name) return HttpResponse.badRequest(new MissingParamError('name'));
-        if (!email) return HttpResponse.badRequest(new MissingParamError('email'));
-        if (!this.emailValidator.isValid(email)) {
-            return HttpResponse.badRequest(new InvalidParamError('email'));
-        }
-        if (!password) return HttpResponse.badRequest(new MissingParamError('password'));
-        if (!passwordConfirmation) return HttpResponse.badRequest(new MissingParamError('passwordConfirmation'));
-        if (password !== passwordConfirmation) return HttpResponse.badRequest(new InvalidParamError('password'));
-
-        const isValid = await this.addAccountUseCase.add({ name, email, password });
-        if (!isValid) return HttpResponse.forbiden();
-
-        const accessToken = await this.authUseCase.auth(email, password);
-        if (!accessToken) return HttpResponse.unauthorized();
-
-        return HttpResponse.ok({ accessToken });
-    }
-}
+import { SignUpRouter } from "../sign-up-router";
 
 const makeSut = () => {
     const emailValidator = new EmailValidatorSpy();
@@ -81,7 +44,7 @@ describe('SignUp Router', () => {
                 email: 'valid_email'
             }
         }
-        const response = await sut.handle(httpRequest);
+        const response = await sut.route(httpRequest);
         expect(response.statusCode).toEqual(400);
         expect(response.body).toEqual(new MissingParamError('name'));
     });
@@ -93,7 +56,7 @@ describe('SignUp Router', () => {
                 name: 'any_name'
             }
         }
-        const response = await sut.handle(httpRequest);
+        const response = await sut.route(httpRequest);
         expect(response.statusCode).toEqual(400);
         expect(response.body).toEqual(new MissingParamError('email'));
     });
@@ -107,7 +70,7 @@ describe('SignUp Router', () => {
                 email: 'invalid_email'
             }
         }
-        const response = await sut.handle(httpRequest);
+        const response = await sut.route(httpRequest);
         expect(response.statusCode).toEqual(400);
         expect(response.body).toEqual(new InvalidParamError('email'));
     });
@@ -120,7 +83,7 @@ describe('SignUp Router', () => {
                 email: 'valid_email'
             }
         }
-        const response = await sut.handle(httpRequest);
+        const response = await sut.route(httpRequest);
         expect(response.statusCode).toEqual(400);
         expect(response.body).toEqual(new MissingParamError('password'));
     });
@@ -134,7 +97,7 @@ describe('SignUp Router', () => {
                 password: 'any_password'
             }
         }
-        const response = await sut.handle(httpRequest);
+        const response = await sut.route(httpRequest);
         expect(response.statusCode).toEqual(400);
         expect(response.body).toEqual(new MissingParamError('passwordConfirmation'));
     });
@@ -149,7 +112,7 @@ describe('SignUp Router', () => {
                 passwordConfirmation: 'passwordConfirmation'
             }
         }
-        const httpResponse = await sut.handle(httpRequest);
+        const httpResponse = await sut.route(httpRequest);
         expect(httpResponse.statusCode).toEqual(400);
         expect(httpResponse.body).toEqual(new InvalidParamError('password'));
     });
@@ -157,21 +120,21 @@ describe('SignUp Router', () => {
     it('Should calls EmailValidator with correct email', async () => {
         const { sut, emailValidator } = makeSut();
         const isValidMethod = jest.spyOn(emailValidator, 'isValid');
-        await sut.handle(validHttpRequest);
+        await sut.route(validHttpRequest);
         expect(isValidMethod).toHaveBeenCalledWith('valid_email');
     });
 
     it('Should throws if EmailValidator throws', async () => {
         const { sut, emailValidator } = makeSut();
         jest.spyOn(emailValidator, 'isValid').mockImplementationOnce(throwError);
-        const promise = sut.handle(validHttpRequest);
+        const promise = sut.route(validHttpRequest);
         await expect(promise).rejects.toThrow();
     });
 
     it('Should returns 403 if AddAccountUseCase returns false', async () => {
         const { sut, addAccountUseCase } = makeSut();
         addAccountUseCase.isValid = false
-        const httpResponse = await sut.handle(validHttpRequest);
+        const httpResponse = await sut.route(validHttpRequest);
         expect(httpResponse.statusCode).toEqual(403);
         expect(httpResponse.body).toEqual(new ForbidenError());
     });
@@ -179,7 +142,7 @@ describe('SignUp Router', () => {
     it('Should calls AddAccountUseCase with correct values', async () => {
         const { sut, addAccountUseCase } = makeSut();
         const addMethod = jest.spyOn(addAccountUseCase, 'add');
-        await sut.handle(validHttpRequest);
+        await sut.route(validHttpRequest);
         expect(addMethod).toHaveBeenCalledWith({
             name: 'any_name',
             email: 'valid_email',
@@ -190,21 +153,21 @@ describe('SignUp Router', () => {
     it('Should throws if AddAccountUseCase throws', async () => {
         const { sut, addAccountUseCase } = makeSut();
         jest.spyOn(addAccountUseCase, 'add').mockImplementationOnce(throwError);
-        const promise = sut.handle(validHttpRequest);
+        const promise = sut.route(validHttpRequest);
         await expect(promise).rejects.toThrow();
     });
 
     it('Should returns 401 if AuthUseCase returns null', async () => {
         const { sut, authUseCase } = makeSut();
         authUseCase.token = null;
-        const httpResponse = await sut.handle(validHttpRequest);
+        const httpResponse = await sut.route(validHttpRequest);
         expect(httpResponse.statusCode).toEqual(401);
         expect(httpResponse.body).toEqual(new UnauthorizedError());
     });
 
     it('Should returns a valid access token if AuthUseCase success', async () => {
         const { sut } = makeSut();
-        const httpResponse = await sut.handle(validHttpRequest);
+        const httpResponse = await sut.route(validHttpRequest);
         expect(httpResponse.statusCode).toEqual(200);
         expect(httpResponse.body).toEqual({ accessToken: 'valid_token' });
     });
@@ -212,14 +175,14 @@ describe('SignUp Router', () => {
     it('Should throws if AuthUseCase throws', async () => {
         const { sut, authUseCase } = makeSut();
         jest.spyOn(authUseCase, 'auth').mockImplementationOnce(throwError);
-        const promise = sut.handle(validHttpRequest);
+        const promise = sut.route(validHttpRequest);
         await expect(promise).rejects.toThrow();
     });
 
     it('Should calls AuthUseCase with corrects values', async () => {
         const { sut, authUseCase } = makeSut();
         const authMethod = jest.spyOn(authUseCase, 'auth');
-        await sut.handle(validHttpRequest);
+        await sut.route(validHttpRequest);
         expect(authMethod).toHaveBeenCalledWith('valid_email', 'password');
     });
 });
