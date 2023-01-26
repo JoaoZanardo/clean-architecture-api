@@ -214,5 +214,12 @@ describe('SignUp Router', () => {
         jest.spyOn(authUseCase, 'auth').mockImplementationOnce(throwError);
         const promise = sut.handle(validHttpRequest);
         await expect(promise).rejects.toThrow();
-    })
+    });
+
+    it('Should calls AuthUseCase with corrects values', async () => {
+        const { sut, authUseCase } = makeSut();
+        const authMethod = jest.spyOn(authUseCase, 'auth');
+        await sut.handle(validHttpRequest);
+        expect(authMethod).toHaveBeenCalledWith('valid_email', 'password');
+    });
 });
