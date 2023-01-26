@@ -2,7 +2,7 @@
 
 This is an simple api based on the Clean Architecture software design (philosophy that separates the elements of a design into ring levels).
 
-Before showing you more about this api, i wanna thanks the [**Rodrigo Manguinho**](https://github.com/rmanguinho) for me introducing to this beautiful world about architecture, designs, principles ... You are the best code teacherin Brazil, i´m so glad to have access to learn with smart peoples like you !
+Before showing you more about this api, i wanna thanks the [**Rodrigo Manguinho**](https://github.com/rmanguinho) for me introducing to this beautiful world about architecture, designs, principles ... You are the best code teacher in Brazil, i´m so glad to have access to learn with smart peoples like you !
 
 > ## Routes
 
