@@ -1,15 +1,7 @@
 import { Collection, Document } from "mongodb";
-import { AddAccountRepository } from "../../../data/protocols/db";
 import mongoHelper from "../../../infra/helpers/mongo-helper";
 import env from "../../../main/config/env";
-
-class MongoAddAccountRepository {
-    async add(params: AddAccountRepository.Params): Promise<AddAccountRepository.Result> {
-        const userModel = await mongoHelper.getCollection('users');
-        const user = await userModel.insertOne({ ...params });
-        return !!user.insertedId;
-    }
-}
+import { MongoAddAccountRepository } from "../mongo-add-account-repository";
 
 describe('AddAccount Repository', () => {
     let userModel: Collection<Document>;
