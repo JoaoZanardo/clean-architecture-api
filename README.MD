@@ -4,6 +4,8 @@ This is an simple api based on the Clean Architecture software design (philosoph
 
 Before showing you more about this api, i wanna thanks the [**Rodrigo Manguinho**](https://github.com/rmanguinho) for me introducing to this beautiful world about architecture, designs, principles ... You are the best code teacher in Brazil, i´m so glad to have access to learn with smart peoples like you !
 
+---
+
 > ## Routes
 
 1. [/signup](./documentation/sign-up.md)
