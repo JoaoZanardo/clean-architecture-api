@@ -1,8 +1,14 @@
 import { HttpResponse } from "../../protocols";
-import { MissingParamError, InvalidParamError, ForbidenError } from "../../errors";
+import {
+    MissingParamError,
+    InvalidParamError,
+    ForbidenError,
+    UnauthorizedError
+} from "../../errors";
 import { EmailValidatorSpy } from "./mocks/mock-email-validator";
 import { throwError } from '../../../data/_test_/helper-test';
 import { AddAccountUseCaseSpy } from "./mocks/mock-add-account-use-case";
+import { AuthUseCaseSpy } from "./mocks/mock-auth-use-case";
 
 type Request = {
     body: {
@@ -16,7 +22,8 @@ type Request = {
 class SignUpRouter {
     constructor(
         private emailValidator: EmailValidatorSpy,
-        private addAccountUseCase: AddAccountUseCaseSpy
+        private addAccountUseCase: AddAccountUseCaseSpy,
+        private authUseCase: AuthUseCaseSpy
     ) { }
 
     async handle(request: Request): Promise<HttpResponse> {
@@ -33,17 +40,26 @@ class SignUpRouter {
         const isValid = await this.addAccountUseCase.add({ name, email, password });
         if (!isValid) return HttpResponse.forbiden();
 
-        return HttpResponse.ok({});
+        const accessToken = await this.authUseCase.auth(email, password);
+        if (!accessToken) return HttpResponse.unauthorized();
+
+        return HttpResponse.ok({ accessToken });
     }
 }
 
 const makeSut = () => {
     const emailValidator = new EmailValidatorSpy();
     const addAccountUseCase = new AddAccountUseCaseSpy();
-    const sut = new SignUpRouter(emailValidator, addAccountUseCase);
+    const authUseCase = new AuthUseCaseSpy();
+    const sut = new SignUpRouter(
+        emailValidator,
+        addAccountUseCase,
+        authUseCase
+    );
     return {
         addAccountUseCase,
         emailValidator,
+        authUseCase,
         sut
     }
 }
@@ -153,7 +169,8 @@ describe('SignUp Router', () => {
     });
 
     it('Should returns 403 if AddAccountUseCase returns false', async () => {
-        const { sut } = makeSut();
+        const { sut, addAccountUseCase } = makeSut();
+        addAccountUseCase.isValid = false
         const httpResponse = await sut.handle(validHttpRequest);
         expect(httpResponse.statusCode).toEqual(403);
         expect(httpResponse.body).toEqual(new ForbidenError());
@@ -175,5 +192,13 @@ describe('SignUp Router', () => {
         jest.spyOn(addAccountUseCase, 'add').mockImplementationOnce(throwError);
         const promise = sut.handle(validHttpRequest);
         await expect(promise).rejects.toThrow();
+    });
+
+    it('Should returns 401 if AuthUseCase returns null', async () => {
+        const { sut, authUseCase } = makeSut();
+        authUseCase.token = null;
+        const httpResponse = await sut.handle(validHttpRequest);
+        expect(httpResponse.statusCode).toEqual(401);
+        expect(httpResponse.body).toEqual(new UnauthorizedError());
     });
 });
