@@ -201,4 +201,11 @@ describe('SignUp Router', () => {
         expect(httpResponse.statusCode).toEqual(401);
         expect(httpResponse.body).toEqual(new UnauthorizedError());
     });
+
+    it('Should returns a valid access token if AuthUseCase success', async () => {
+        const { sut, authUseCase } = makeSut();
+        const httpResponse = await sut.handle(validHttpRequest);
+        expect(httpResponse.statusCode).toEqual(200);
+        expect(httpResponse.body).toEqual({ accessToken: 'valid_token' });
+    })
 });
