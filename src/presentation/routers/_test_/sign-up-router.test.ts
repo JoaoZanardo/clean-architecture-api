@@ -203,9 +203,16 @@ describe('SignUp Router', () => {
     });
 
     it('Should returns a valid access token if AuthUseCase success', async () => {
-        const { sut, authUseCase } = makeSut();
+        const { sut } = makeSut();
         const httpResponse = await sut.handle(validHttpRequest);
         expect(httpResponse.statusCode).toEqual(200);
         expect(httpResponse.body).toEqual({ accessToken: 'valid_token' });
+    });
+
+    it('Should throws if AuthUseCase throws', async () => {
+        const { sut, authUseCase } = makeSut();
+        jest.spyOn(authUseCase, 'auth').mockImplementationOnce(throwError);
+        const promise = sut.handle(validHttpRequest);
+        await expect(promise).rejects.toThrow();
     })
 });
