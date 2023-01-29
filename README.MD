@@ -28,4 +28,4 @@ Before showing you more about this api, i wanna thanks the [**Rodrigo Manguinho*
 
 ---
 
-**_"THE ONYL WAY TO GO FAST, IS TO GO WELL"_** - _Uncle Bob_
+**_"THE ONLY WAY TO GO FAST, IS TO GO WELL"_** - _Uncle Bob_
