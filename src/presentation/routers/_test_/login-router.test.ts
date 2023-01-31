@@ -136,6 +136,6 @@ describe('Login Router', () => {
         };
         const authMethod = jest.spyOn(authUseCaseSpy, 'auth');
         await sut.route(htppRequest);
-        expect(authMethod).toHaveBeenCalledWith('valid@email.com', 'valid_password');
+        expect(authMethod).toHaveBeenCalledWith({ email: 'valid@email.com', password: 'valid_password' });
     });
 });

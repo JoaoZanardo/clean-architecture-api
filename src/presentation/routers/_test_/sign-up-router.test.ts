@@ -183,6 +183,6 @@ describe('SignUp Router', () => {
         const { sut, authUseCase } = makeSut();
         const authMethod = jest.spyOn(authUseCase, 'auth');
         await sut.route(validHttpRequest);
-        expect(authMethod).toHaveBeenCalledWith('valid_email', 'password');
+        expect(authMethod).toHaveBeenCalledWith({ email: 'valid_email', password: 'password' });
     });
 });

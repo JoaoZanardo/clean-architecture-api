@@ -1,8 +1,8 @@
 import { Encrypter, TokenGenerator } from "../protocols/cryptography";
 import { LoadUserByEmailRepository, UpdateAccessTokenRepository } from "../protocols/db";
-import { AuthUseCase } from "../../domain/usecases";
+import { Auth } from "../../domain/usecases";
 
-export class AuthUseCaseService implements AuthUseCase {
+export class AuthUseCaseService implements Auth {
     constructor(
         private loadUserByEmailRepo: LoadUserByEmailRepository,
         private encrypter: Encrypter,
@@ -10,7 +10,8 @@ export class AuthUseCaseService implements AuthUseCase {
         private updateAccessTokenRepo: UpdateAccessTokenRepository
     ) { }
 
-    async auth(email: string, password: string): Promise<null | string> {
+    async auth(params: Auth.Params): Promise<Auth.Result> {
+        const { email, password } = params;
         const user = await this.loadUserByEmailRepo.load(email);
         if (!user) return null;
         const isValid = await this.encrypter.compare(password, user.password);

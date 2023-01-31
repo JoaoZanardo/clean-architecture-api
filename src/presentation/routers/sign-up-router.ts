@@ -1,4 +1,4 @@
-import { AuthUseCase } from "src/domain/usecases";
+import { Auth } from "src/domain/usecases";
 import { AddAccount } from "src/domain/usecases/add-account";
 import { EmailValidator } from "../../validations/protocols";
 import { InvalidParamError, MissingParamError } from "../errors";
@@ -8,7 +8,7 @@ export class SignUpRouter implements Router<SignUpRouter.HttpRequest> {
     constructor(
         private emailValidator: EmailValidator,
         private addAccountUseCase: AddAccount,
-        private authUseCase: AuthUseCase
+        private authUseCase: Auth
     ) { }
 
     async route(request: SignUpRouter.HttpRequest): Promise<HttpResponse> {
@@ -21,7 +21,7 @@ export class SignUpRouter implements Router<SignUpRouter.HttpRequest> {
         if (password !== passwordConfirmation) return HttpResponse.badRequest(new InvalidParamError('password'));
         const isValid = await this.addAccountUseCase.add({ name, email, password });
         if (!isValid) return HttpResponse.forbiden();
-        const accessToken = await this.authUseCase.auth(email, password);
+        const accessToken = await this.authUseCase.auth({email, password});
         if (!accessToken) return HttpResponse.unauthorized();
         return HttpResponse.ok({ accessToken });
     }

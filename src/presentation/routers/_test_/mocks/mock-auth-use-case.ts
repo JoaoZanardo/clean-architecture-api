@@ -1,7 +1,9 @@
-export class AuthUseCaseSpy {
-    public token: string | null = 'valid_token';
+import { Auth } from "../../../../domain/usecases";
 
-    async auth(email: string, password: string): Promise<string | null> {
+export class AuthUseCaseSpy {
+    public token: Auth.Result = 'valid_token';
+
+    async auth(params: Auth.Params): Promise<Auth.Result> {
         return this.token;
     }
 }
