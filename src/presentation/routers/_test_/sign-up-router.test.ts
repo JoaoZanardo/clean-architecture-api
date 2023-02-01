@@ -1,14 +1,13 @@
 import {
     MissingParamError,
     InvalidParamError,
-    ForbidenError,
-    UnauthorizedError
 } from "../../errors";
 import { throwError } from '../../../data/_test_/helper-test';
 import { AddAccountUseCaseSpy } from "./mocks/mock-add-account-use-case";
 import { AuthUseCaseSpy } from "./mocks/mock-auth-use-case";
 import { SignUpRouter } from "../sign-up-router";
 import { ValidatorSpy } from "./mocks/mock-validator";
+import { HttpResponse } from "../../../presentation/protocols";
 
 const makeSut = () => {
     const validator = new ValidatorSpy();
@@ -44,9 +43,8 @@ describe('SignUp Router', () => {
             ...validHttpRequest,
             name: ''
         }
-        const response = await sut.route(httpRequest);
-        expect(response.statusCode).toEqual(400);
-        expect(response.body).toEqual(new MissingParamError('name'));
+        const httpResponse = await sut.route(httpRequest);
+        expect(httpResponse).toEqual(HttpResponse.badRequest(new MissingParamError('name')));
     });
 
     it('Should returns 400 if no email is provided', async () => {
@@ -56,9 +54,8 @@ describe('SignUp Router', () => {
             ...validHttpRequest,
             email: ''
         }
-        const response = await sut.route(httpRequest);
-        expect(response.statusCode).toEqual(400);
-        expect(response.body).toEqual(new MissingParamError('email'));
+        const httpResponse = await sut.route(httpRequest);
+        expect(httpResponse).toEqual(HttpResponse.badRequest(new MissingParamError('email')));
     });
 
     it('Should returns 400 if an invalid email is provided', async () => {
@@ -68,9 +65,8 @@ describe('SignUp Router', () => {
             ...validHttpRequest,
             email: 'invalid_email'
         }
-        const response = await sut.route(httpRequest);
-        expect(response.statusCode).toEqual(400);
-        expect(response.body).toEqual(new InvalidParamError('email'));
+        const httpResponse = await sut.route(httpRequest);
+        expect(httpResponse).toEqual(HttpResponse.badRequest(new InvalidParamError('email')));
     });
 
     it('Should returns 400 if no password is provided', async () => {
@@ -80,9 +76,8 @@ describe('SignUp Router', () => {
             ...validHttpRequest,
             password: ''
         }
-        const response = await sut.route(httpRequest);
-        expect(response.statusCode).toEqual(400);
-        expect(response.body).toEqual(new MissingParamError('password'));
+        const httpResponse = await sut.route(httpRequest);
+        expect(httpResponse).toEqual(HttpResponse.badRequest(new MissingParamError('password')));
     });
 
     it('Should returns 400 if no passwordConfirmation is provided', async () => {
@@ -92,9 +87,8 @@ describe('SignUp Router', () => {
             ...validHttpRequest,
             passwordConfirmation: ''
         }
-        const response = await sut.route(httpRequest);
-        expect(response.statusCode).toEqual(400);
-        expect(response.body).toEqual(new MissingParamError('passwordConfirmation'));
+        const httpResponse = await sut.route(httpRequest);
+        expect(httpResponse).toEqual(HttpResponse.badRequest(new MissingParamError('passwordConfirmation')));
     });
 
     it('Should returns 400 if the passwords do not match', async () => {
@@ -105,8 +99,7 @@ describe('SignUp Router', () => {
             passwordConfirmation: 'different_password'
         }
         const httpResponse = await sut.route(httpRequest);
-        expect(httpResponse.statusCode).toEqual(400);
-        expect(httpResponse.body).toEqual(new InvalidParamError('password'));
+        expect(httpResponse).toEqual(HttpResponse.badRequest(new InvalidParamError('password')));
     });
 
     it('Should calls Validator with correct email', async () => {
@@ -127,8 +120,7 @@ describe('SignUp Router', () => {
         const { sut, addAccountUseCase } = makeSut();
         addAccountUseCase.isValid = false
         const httpResponse = await sut.route(validHttpRequest);
-        expect(httpResponse.statusCode).toEqual(403);
-        expect(httpResponse.body).toEqual(new ForbidenError());
+        expect(httpResponse).toEqual(HttpResponse.forbiden());
     });
 
     it('Should calls AddAccountUseCase with correct values', async () => {
@@ -153,15 +145,13 @@ describe('SignUp Router', () => {
         const { sut, authUseCase } = makeSut();
         authUseCase.token = null;
         const httpResponse = await sut.route(validHttpRequest);
-        expect(httpResponse.statusCode).toEqual(401);
-        expect(httpResponse.body).toEqual(new UnauthorizedError());
+        expect(httpResponse).toEqual(HttpResponse.unauthorized());
     });
 
     it('Should returns a valid access token if AuthUseCase success', async () => {
         const { sut } = makeSut();
         const httpResponse = await sut.route(validHttpRequest);
-        expect(httpResponse.statusCode).toEqual(200);
-        expect(httpResponse.body).toEqual({ accessToken: 'valid_token' });
+        expect(httpResponse).toEqual(HttpResponse.ok({ accessToken: 'valid_token' }));
     });
 
     it('Should throws if AuthUseCase throws', async () => {
