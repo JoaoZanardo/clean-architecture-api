@@ -2,7 +2,6 @@ import { AuthUseCaseService } from "../../data/usecases";
 import { MongoDBLoadUserByEmailRepository, MongoDBUpdateAccessTokenRepository } from "../../infra/repositories";
 import { LoginRouter } from "../../presentation/routers";
 import { Bcrypt, Jwt } from "../../infra/cryptography";
-import { Validator } from "../../infra/validators";
 import env from "../config/env";
 import { LoginRouterValidationCompose } from "./login-router-validation-composer";
 

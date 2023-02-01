@@ -2,9 +2,9 @@ import { MongoAddAccountRepository } from "../../infra/repositories/mongo-add-ac
 import { AddAcountUseCaseService, AuthUseCaseService } from "../../data/usecases";
 import { Bcrypt, Jwt } from "../../infra/cryptography";
 import { MongoDBLoadUserByEmailRepository, MongoDBUpdateAccessTokenRepository } from "../../infra/repositories";
-import { Validator } from "../../infra/validators";
 import { SignUpRouter } from "../../presentation/routers/sign-up-router";
 import env from "../config/env";
+import { SignUpRouteValidationCompose } from "./sign-up-router-validation-compose";
 
 export class SignUpRouterCompose {
     static compose() {
@@ -19,14 +19,14 @@ export class SignUpRouterCompose {
             jwt,
             updateAccessTokenRepository
         );
-        const emailValidator = new Validator();
         const addAccountUseCase = new AddAcountUseCaseService(
             loadUserByEmailRepository,
             addAccountRepository,
             bcrypt
-        )
+        );
+        const validator = SignUpRouteValidationCompose.compose();
         return new SignUpRouter(
-            emailValidator,
+            validator,
             addAccountUseCase,
             authUseCase
         );
