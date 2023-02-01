@@ -1,7 +1,7 @@
-import { CompareFieldsValidation } from "../../validations/validators/compare-fields-validation";
-import { EmailValidatorAdapter } from "../../infra/validators";
-import { Validation } from "../../presentation/protocols";
-import { EmailValidation, RequiredFieldValidation, ValidationComposite } from "../../validations/validators";
+import { CompareFieldsValidation } from "../../../validations/validators/";
+import { EmailValidatorAdapter } from "../../../infra/validators";
+import { Validation } from "../../../presentation/protocols";
+import { EmailValidation, RequiredFieldValidation, ValidationComposite } from "../../../validations/validators";
 
 export class SignUpRouteValidationCompose {
     static compose(): ValidationComposite {

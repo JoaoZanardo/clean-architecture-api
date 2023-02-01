@@ -1,6 +1,6 @@
-import { Validation } from "../../presentation/protocols";
-import { EmailValidation, RequiredFieldValidation, ValidationComposite } from "../../validations/validators";
-import { EmailValidatorAdapter } from "../../infra/validators";
+import { Validation } from "../../../presentation/protocols";
+import { EmailValidation, RequiredFieldValidation, ValidationComposite } from "../../../validations/validators";
+import { EmailValidatorAdapter } from "../../../infra/validators";
 
 export class LoginRouterValidationCompose {
     static compose(): ValidationComposite {

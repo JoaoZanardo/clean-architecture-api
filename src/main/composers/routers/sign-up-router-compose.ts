@@ -1,7 +1,7 @@
-import { SignUpRouter } from "../../presentation/routers/";
-import { SignUpRouteValidationCompose } from "./sign-up-router-validation-compose";
-import { AuthUseCaseComposer } from "./auth-usecase-compose";
-import { AddAcountUseCaseComposer } from "./add-account-usecase-compose";
+import { SignUpRouter } from "../../../presentation/routers";
+import { SignUpRouteValidationCompose } from "../validations";
+import { AuthUseCaseComposer } from "../usecases";
+import { AddAcountUseCaseComposer } from "../usecases";
 
 export class SignUpRouterCompose {
     static compose() {

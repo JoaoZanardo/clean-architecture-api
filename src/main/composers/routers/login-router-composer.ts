@@ -1,6 +1,6 @@
-import { LoginRouter } from "../../presentation/routers";
-import { LoginRouterValidationCompose } from "./login-router-validation-composer";
-import { AuthUseCaseComposer } from "./auth-usecase-compose";
+import { LoginRouter } from "../../../presentation/routers";
+import { LoginRouterValidationCompose } from "../validations";
+import { AuthUseCaseComposer } from "../usecases/";
 
 export class LoginRouterCompose {
     static compose() {

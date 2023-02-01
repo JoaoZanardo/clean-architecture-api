@@ -1,8 +1,8 @@
-import { EncrypterAdapter, TokenGeneratorAdapter } from "../../infra/cryptography";
-import { MongoDBLoadUserByEmailRepository, MongoDBUpdateAccessTokenRepository } from "../../infra/repositories";
-import { AuthUseCaseService } from "../../data/usecases";
-import { Auth } from "../../domain/usecases";
-import env from "../config/env";
+import { EncrypterAdapter, TokenGeneratorAdapter } from "../../../infra/cryptography";
+import { MongoDBLoadUserByEmailRepository, MongoDBUpdateAccessTokenRepository } from "../../../infra/repositories";
+import { AuthUseCaseService } from "../../../data/usecases";
+import { Auth } from "../../../domain/usecases";
+import env from "../../config/env";
 
 export class AuthUseCaseComposer {
     static compose(): Auth {
