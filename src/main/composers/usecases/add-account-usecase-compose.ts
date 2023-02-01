@@ -3,7 +3,7 @@ import { AddAccount } from "../../../domain/usecases";
 import { EncrypterAdapter } from "../../../infra/cryptography";
 import { MongoAddAccountRepository, MongoDBLoadUserByEmailRepository } from "../../../infra/repositories";
 
-export class AddAcountUseCaseComposer {
+export class AddAcountUseCaseCompose {
     static compose(): AddAccount {
         const addAccountRepository = new MongoAddAccountRepository();
         const encrypter = new EncrypterAdapter();

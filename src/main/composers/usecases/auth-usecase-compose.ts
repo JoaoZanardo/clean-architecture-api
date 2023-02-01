@@ -4,7 +4,7 @@ import { AuthUseCaseService } from "../../../data/usecases";
 import { Auth } from "../../../domain/usecases";
 import env from "../../config/env";
 
-export class AuthUseCaseComposer {
+export class AuthUseCaseCompose {
     static compose(): Auth {
         const tokenGenerator = new TokenGeneratorAdapter(env.tokenScret);
         const encrypter = new EncrypterAdapter();
