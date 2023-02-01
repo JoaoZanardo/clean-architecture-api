@@ -1,4 +1,4 @@
-import { Jwt } from "../";
+import { TokenGeneratorAdapter } from "../";
 import jwt from 'jsonwebtoken';
 
 interface MockedJwt {
@@ -18,7 +18,7 @@ jest.mock('jsonwebtoken', () => ({
 
 const makeSut = () => {
     return {
-        sut: new Jwt('secret'),
+        sut: new TokenGeneratorAdapter('secret'),
         mockedJwt: jwt as unknown as jest.Mocked<MockedJwt>
     };
 };

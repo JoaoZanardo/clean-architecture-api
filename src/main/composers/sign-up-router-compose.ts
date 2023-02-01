@@ -1,6 +1,6 @@
 import { MongoAddAccountRepository } from "../../infra/repositories";
 import { AddAcountUseCaseService, AuthUseCaseService } from "../../data/usecases";
-import { Bcrypt, Jwt } from "../../infra/cryptography";
+import { EncrypterAdapter, TokenGeneratorAdapter } from "../../infra/cryptography";
 import { MongoDBLoadUserByEmailRepository, MongoDBUpdateAccessTokenRepository } from "../../infra/repositories";
 import { SignUpRouter } from "../../presentation/routers/";
 import env from "../config/env";
@@ -8,21 +8,21 @@ import { SignUpRouteValidationCompose } from "./sign-up-router-validation-compos
 
 export class SignUpRouterCompose {
     static compose() {
-        const jwt = new Jwt(env.tokenScret);
-        const bcrypt = new Bcrypt();
+        const tokenGenerator = new TokenGeneratorAdapter(env.tokenScret);
+        const encrypter = new EncrypterAdapter();
         const loadUserByEmailRepository = new MongoDBLoadUserByEmailRepository();
         const updateAccessTokenRepository = new MongoDBUpdateAccessTokenRepository();
         const addAccountRepository = new MongoAddAccountRepository();
         const authUseCase = new AuthUseCaseService(
             loadUserByEmailRepository,
-            bcrypt,
-            jwt,
+            encrypter,
+            tokenGenerator,
             updateAccessTokenRepository
         );
         const addAccountUseCase = new AddAcountUseCaseService(
             loadUserByEmailRepository,
             addAccountRepository,
-            bcrypt
+            encrypter
         );
         const validator = SignUpRouteValidationCompose.compose();
         return new SignUpRouter(

@@ -1,4 +1,4 @@
-import { Validator } from '../';
+import { EmailValidatorAdapter } from '../';
 import validator from 'validator';
 
 interface MockedValidator {
@@ -18,7 +18,7 @@ jest.mock('validator', () => ({
 
 const makeSut = () => {
     return {
-        sut: new Validator(),
+        sut: new EmailValidatorAdapter(),
         mockedValidator: validator as unknown as jest.Mocked<MockedValidator>
     }
 };

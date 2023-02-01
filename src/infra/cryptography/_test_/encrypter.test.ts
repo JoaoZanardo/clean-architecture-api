@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { Bcrypt } from '../';
+import { EncrypterAdapter } from '../';
 
 interface MockedBcrypt {
     isValid: boolean;
@@ -22,7 +22,7 @@ jest.mock('bcrypt', () => ({
 const makeSut = () => {
     const mockedBcrypt = bcrypt as unknown as jest.Mocked<MockedBcrypt>;
     return {
-        sut: new Bcrypt(),
+        sut: new EncrypterAdapter(),
         mockedBcrypt
     }
 };
