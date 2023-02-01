@@ -21,7 +21,7 @@ export class SignUpRouter implements Router<SignUpRouter.HttpRequest> {
         if (password !== passwordConfirmation) return HttpResponse.badRequest(new InvalidParamError('password'));
         const isValid = await this.addAccountUseCase.add({ name, email, password });
         if (!isValid) return HttpResponse.forbiden();
-        const accessToken = await this.authUseCase.auth({email, password});
+        const accessToken = await this.authUseCase.auth({ email, password });
         if (!accessToken) return HttpResponse.unauthorized();
         return HttpResponse.ok({ accessToken });
     }

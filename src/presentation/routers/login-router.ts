@@ -1,6 +1,4 @@
 import { HttpResponse, Validation } from "../protocols";
-import { InvalidParamError, MissingParamError } from "../errors";
-import { EmailValidator } from "../../validations/protocols";
 import { Auth } from "../../domain/usecases";
 import { Router } from "../protocols";
 
@@ -18,7 +16,6 @@ export class LoginRouter implements Router<LoginRouter.HttpRequest> {
             if (!accessToken) return HttpResponse.unauthorized();
             return HttpResponse.ok({ accessToken });
         } catch (error) {
-            console
             return HttpResponse.serverError();
         }
     }
