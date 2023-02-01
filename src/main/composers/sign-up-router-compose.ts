@@ -1,8 +1,8 @@
-import { MongoAddAccountRepository } from "../../infra/repositories/mongo-add-account-repository";
+import { MongoAddAccountRepository } from "../../infra/repositories";
 import { AddAcountUseCaseService, AuthUseCaseService } from "../../data/usecases";
 import { Bcrypt, Jwt } from "../../infra/cryptography";
 import { MongoDBLoadUserByEmailRepository, MongoDBUpdateAccessTokenRepository } from "../../infra/repositories";
-import { SignUpRouter } from "../../presentation/routers/sign-up-router";
+import { SignUpRouter } from "../../presentation/routers/";
 import env from "../config/env";
 import { SignUpRouteValidationCompose } from "./sign-up-router-validation-compose";
 

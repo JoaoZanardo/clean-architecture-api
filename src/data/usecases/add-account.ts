@@ -1,4 +1,4 @@
-import { AddAccount } from "src/domain/usecases/add-account";
+import { AddAccount } from "../../domain/usecases";
 import { Encrypter } from "../protocols/cryptography";
 import { AddAccountRepository, LoadUserByEmailRepository } from "../protocols/db";
 
