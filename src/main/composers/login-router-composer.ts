@@ -4,6 +4,7 @@ import { LoginRouter } from "../../presentation/routers";
 import { Bcrypt, Jwt } from "../../infra/cryptography";
 import { Validator } from "../../infra/validators";
 import env from "../config/env";
+import { LoginRouterValidationCompose } from "./login-router-validation-composer";
 
 export class LoginRouterCompose {
     static compose() {
@@ -17,7 +18,7 @@ export class LoginRouterCompose {
             jwt,
             updateAccessTokenRepository
         );
-        const emailValidator = new Validator();
-        return new LoginRouter(authUseCase, emailValidator);
+        const validation = LoginRouterValidationCompose.compose()
+        return new LoginRouter(authUseCase, validation);
     }
 }

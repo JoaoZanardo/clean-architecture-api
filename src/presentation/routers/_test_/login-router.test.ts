@@ -7,24 +7,27 @@ import {
 } from "../../errors";
 import { LoginRouter } from "../";
 import { AuthUseCaseSpy } from "./mocks/mock-auth-use-case";
-import { EmailValidatorSpy } from "./mocks/mock-email-validator";
+import { ValidatorSpy } from "./mocks/mock-validator";
+import { HttpResponse } from "../../../presentation/protocols";
 
 const makeSut = () => {
     const authUseCaseSpy = new AuthUseCaseSpy();
-    const emailValidatorSpy = new EmailValidatorSpy();
-    const sut = new LoginRouter(authUseCaseSpy, emailValidatorSpy);
+    const validatorSpy = new ValidatorSpy();
+    const sut = new LoginRouter(authUseCaseSpy, validatorSpy);
     return {
         sut,
         authUseCaseSpy,
-        emailValidatorSpy,
+        validatorSpy,
     }
 };
 
 describe('Login Router', () => {
     it('Should return 400 if no email is provided', async () => {
-        const { sut } = makeSut();
+        const { sut, validatorSpy } = makeSut();
+        validatorSpy.error = new MissingParamError('email');
         const htppRequest = {
             body: {
+                email: '',
                 password: 'any_password'
             }
         };
@@ -34,8 +37,8 @@ describe('Login Router', () => {
     });
 
     it('Should return 400 if an invalid email is provided', async () => {
-        const { sut, emailValidatorSpy } = makeSut();
-        emailValidatorSpy.isEmailValid = false;
+        const { sut, validatorSpy } = makeSut();
+        validatorSpy.error = new InvalidParamError('email');
         const htppRequest = {
             body: {
                 email: 'invalid@email.com',
@@ -48,10 +51,12 @@ describe('Login Router', () => {
     });
 
     it('Should return 400 if no password is provided', async () => {
-        const { sut } = makeSut();
+        const { sut, validatorSpy } = makeSut();
+        validatorSpy.error = new MissingParamError('password');
         const htppRequest = {
             body: {
-                email: 'any@email.com'
+                email: 'any@email.com',
+                password: ''
             }
         };
         const htppResponse = await sut.route(htppRequest);
@@ -99,9 +104,9 @@ describe('Login Router', () => {
         expect(httpResponse.body).toEqual(new ServerError());
     });
 
-    it('Should return 500 if EmailValidator throws', async () => {
-        const { sut, emailValidatorSpy } = makeSut();
-        jest.spyOn(emailValidatorSpy, 'isValid').mockImplementationOnce(throwError);
+    it('Should return 500 if Validator throws', async () => {
+        const { sut, validatorSpy } = makeSut();
+        jest.spyOn(validatorSpy, 'validate').mockImplementationOnce(throwError);
         const htppRequest = {
             body: {
                 email: 'valid@email.com',
@@ -114,16 +119,16 @@ describe('Login Router', () => {
     });
 
     it('Should calls EmailValidator with correct email', async () => {
-        const { sut, emailValidatorSpy } = makeSut();
+        const { sut, validatorSpy } = makeSut();
         const htppRequest = {
             body: {
                 email: 'valid@email.com',
                 password: 'valid_password'
             }
         };
-        const isValidMethod = jest.spyOn(emailValidatorSpy, 'isValid');
+        const validateMethod = jest.spyOn(validatorSpy, 'validate');
         await sut.route(htppRequest);
-        expect(isValidMethod).toHaveBeenCalledWith('valid@email.com');
+        expect(validateMethod).toHaveBeenCalledWith(htppRequest.body);
     });
 
     it('Should calls AuthUseCase with correct values', async () => {

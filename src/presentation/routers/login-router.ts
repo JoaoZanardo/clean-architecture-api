@@ -1,4 +1,4 @@
-import { HttpResponse } from "../protocols";
+import { HttpResponse, Validation } from "../protocols";
 import { InvalidParamError, MissingParamError } from "../errors";
 import { EmailValidator } from "../../validations/protocols";
 import { Auth } from "../../domain/usecases";
@@ -7,16 +7,14 @@ import { Router } from "../protocols";
 export class LoginRouter implements Router<LoginRouter.HttpRequest> {
     constructor(
         private authUseCase: Auth,
-        private emailValidator: EmailValidator
+        private validator: Validation
     ) { }
 
     async route(httpRequest: LoginRouter.HttpRequest): Promise<HttpResponse> {
         try {
-            const { email, password } = httpRequest.body;
-            if (!email) return HttpResponse.badRequest(new MissingParamError('email'));
-            if (!this.emailValidator.isValid(email)) return HttpResponse.badRequest(new InvalidParamError('email'));
-            if (!password) return HttpResponse.badRequest(new MissingParamError('password'));
-            const accessToken = await this.authUseCase.auth({email, password});
+            const error = this.validator.validate(httpRequest.body);
+            if (error) return HttpResponse.badRequest(error);
+            const accessToken = await this.authUseCase.auth(httpRequest.body);
             if (!accessToken) return HttpResponse.unauthorized();
             return HttpResponse.ok({ accessToken });
         } catch (error) {
@@ -29,8 +27,8 @@ export class LoginRouter implements Router<LoginRouter.HttpRequest> {
 export namespace LoginRouter {
     export type HttpRequest = {
         body: {
-            email?: string;
-            password?: string;
+            email: string;
+            password: string;
         }
     }
 }
