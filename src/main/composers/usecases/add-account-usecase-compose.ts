@@ -1,11 +1,11 @@
 import { AddAcountUseCaseService } from "../../../data/usecases";
 import { AddAccount } from "../../../domain/usecases";
 import { EncrypterAdapter } from "../../../infra/cryptography";
-import { MongoAddAccountRepository, MongoDBLoadUserByEmailRepository } from "../../../infra/repositories";
+import { MongoDBAddAccountRepository, MongoDBLoadUserByEmailRepository } from "../../../infra/repositories";
 
 export class AddAcountUseCaseCompose {
     static compose(): AddAccount {
-        const addAccountRepository = new MongoAddAccountRepository();
+        const addAccountRepository = new MongoDBAddAccountRepository();
         const encrypter = new EncrypterAdapter();
         const loadUserByEmailRepository = new MongoDBLoadUserByEmailRepository();
         return new AddAcountUseCaseService(

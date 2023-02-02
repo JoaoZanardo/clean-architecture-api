@@ -1,7 +1,7 @@
 import { Collection, Document } from "mongodb";
 import mongoHelper from "../../../infra/helpers/mongo-helper";
 import env from "../../../main/config/env";
-import { MongoAddAccountRepository } from "../mongo-add-account-repository";
+import { MongoDBAddAccountRepository } from "../mongo-add-account-repository";
 
 describe('AddAccount Repository', () => {
     let userModel: Collection<Document>;
@@ -20,7 +20,7 @@ describe('AddAccount Repository', () => {
     });
 
     it('Should create an user', async () => {
-        const sut = new MongoAddAccountRepository();
+        const sut = new MongoDBAddAccountRepository();
         const user = await sut.add({
             name: 'Jonh Doe',
             email: 'jonhdoe@email.com',
