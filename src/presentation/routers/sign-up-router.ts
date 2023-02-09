@@ -10,14 +10,18 @@ export class SignUpRouter implements Router<SignUpRouter.HttpRequest> {
     ) { }
 
     async route(HttpRequest: SignUpRouter.HttpRequest): Promise<HttpResponse> {
-        const error = this.validator.validate(HttpRequest.body);
-        if (error) return HttpResponse.badRequest(error);
-        const { email, name, password } = HttpRequest.body
-        const isValid = await this.addAccountUseCase.add({ name, email, password });
-        if (!isValid) return HttpResponse.forbiden();
-        const accessToken = await this.authUseCase.auth({ email, password });
-        if (!accessToken) return HttpResponse.unauthorized();
-        return HttpResponse.ok({ accessToken });
+        try {
+            const error = this.validator.validate(HttpRequest.body);
+            if (error) return HttpResponse.badRequest(error);
+            const { email, name, password } = HttpRequest.body
+            const isValid = await this.addAccountUseCase.add({ name, email, password });
+            if (!isValid) return HttpResponse.forbiden();
+            const accessToken = await this.authUseCase.auth({ email, password });
+            if (!accessToken) return HttpResponse.unauthorized();
+            return HttpResponse.ok({ accessToken });
+        } catch (error) {
+            return HttpResponse.serverError();
+        }
     }
 }
 
