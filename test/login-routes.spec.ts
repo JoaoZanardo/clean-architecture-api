@@ -1,6 +1,6 @@
 import { Collection, Document } from 'mongodb';
 import { agent } from 'supertest';
-import app from '../src/main/config/app';
+import { fakeApp } from '../src/main/config/fake-app';
 import mongoHelper from '../src/infra/helpers/mongo-helper';
 import bcrypt from 'bcrypt';
 import env from '../src/main/config/env';
@@ -28,14 +28,14 @@ describe('Login Routes', () => {
                 password: await bcrypt.hash('valid_password', 10)
             });
 
-            await agent(app)
+            await agent(fakeApp)
                 .post('/api/login')
                 .send({ email: 'valid@email.com', password: 'valid_password' })
                 .expect(200);
         });
 
         it('Should return 400 when no credentials are provided', async () => {
-            await agent(app)
+            await agent(fakeApp)
                 .post('/api/login')
                 .send({})
                 .expect(400);
@@ -47,7 +47,7 @@ describe('Login Routes', () => {
                 password: await bcrypt.hash('valid_password', 10)
             });
 
-            await agent(app)
+            await agent(fakeApp)
                 .post('/api/login')
                 .send({ email: 'valid@email.com', password: 'valid_password' })
                 .expect(401);
@@ -56,7 +56,7 @@ describe('Login Routes', () => {
 
     describe('/signup', () => {
         it('Should return 200 when valid creditials are provided', async () => {
-            await agent(app)
+            await agent(fakeApp)
                 .post('/api/signup')
                 .send({
                     name: 'any_name',
@@ -68,7 +68,7 @@ describe('Login Routes', () => {
         });
 
         it('Should return 400 when invalid credentials are provided', async () => {
-            await agent(app)
+            await agent(fakeApp)
                 .post('/api/signup')
                 .send({})
                 .expect(400);
@@ -81,7 +81,7 @@ describe('Login Routes', () => {
                 password: await bcrypt.hash('valid_password', 10),
             });
 
-            await agent(app)
+            await agent(fakeApp)
                 .post('/api/signup')
                 .send({
                     name: 'any_name',

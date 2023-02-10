@@ -109,11 +109,11 @@ describe('SignUp Router', () => {
         expect(validateMethod).toHaveBeenCalledWith(validHttpRequest.body);
     });
 
-    it('Should throws if Validator throws', async () => {
+    it('Should returns 500 if Validator throws', async () => {
         const { sut, validator } = makeSut();
         jest.spyOn(validator, 'validate').mockImplementationOnce(throwError);
-        const promise = sut.route(validHttpRequest);
-        await expect(promise).rejects.toThrow();
+        const httpResponse = await sut.route(validHttpRequest);
+        expect(httpResponse).toEqual(HttpResponse.serverError());
     });
 
     it('Should returns 403 if AddAccountUseCase returns false', async () => {
@@ -134,11 +134,11 @@ describe('SignUp Router', () => {
         });
     });
 
-    it('Should throws if AddAccountUseCase throws', async () => {
+    it('Should returns 500 if AddAccountUseCase throws', async () => {
         const { sut, addAccountUseCase } = makeSut();
         jest.spyOn(addAccountUseCase, 'add').mockImplementationOnce(throwError);
-        const promise = sut.route(validHttpRequest);
-        await expect(promise).rejects.toThrow();
+        const httpResponse = await sut.route(validHttpRequest);
+        expect(httpResponse).toEqual(HttpResponse.serverError());
     });
 
     it('Should returns 401 if AuthUseCase returns null', async () => {
@@ -154,11 +154,11 @@ describe('SignUp Router', () => {
         expect(httpResponse).toEqual(HttpResponse.ok({ accessToken: 'valid_token' }));
     });
 
-    it('Should throws if AuthUseCase throws', async () => {
+    it('Should returns 500 if AuthUseCase throws', async () => {
         const { sut, authUseCase } = makeSut();
         jest.spyOn(authUseCase, 'auth').mockImplementationOnce(throwError);
-        const promise = sut.route(validHttpRequest);
-        await expect(promise).rejects.toThrow();
+        const httpResponse = await sut.route(validHttpRequest);
+        expect(httpResponse).toEqual(HttpResponse.serverError());
     });
 
     it('Should calls AuthUseCase with corrects values', async () => {
