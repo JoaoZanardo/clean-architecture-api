@@ -1,9 +1,9 @@
-import { Application } from "express";
-import { setupRoutes } from "./routes";
+import { Application, Router } from "express";
 import mongoHelper from "../../infra/helpers/mongo-helper";
 import env from "./env";
 import { cors } from "../middlewares/cors";
 import { jsonParser } from "../middlewares/json-parser";
+import { loginRoutes } from "../routes/login-routes";
 
 export class Server {
     constructor(
@@ -18,7 +18,9 @@ export class Server {
     }
 
     private setupRoutes(): void {
-        setupRoutes(this._app);
+        const router = Router();
+        this._app.use('/api', router);
+        loginRoutes(router);
     }
 
     private setupApp(): void {
