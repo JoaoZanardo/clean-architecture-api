@@ -1,8 +1,9 @@
 import { Application } from "express";
 import { setupRoutes } from "./routes";
-import { setupApp } from "./setup";
 import mongoHelper from "../../infra/helpers/mongo-helper";
 import env from "./env";
+import { cors } from "../middlewares/cors";
+import { jsonParser } from "../middlewares/json-parser";
 
 export class Server {
     constructor(
@@ -21,7 +22,9 @@ export class Server {
     }
 
     private setupApp(): void {
-        setupApp(this._app);
+        this._app.disable('x-powered-by');
+        this._app.use(cors);
+        this._app.use(jsonParser);
     }
 
     private async databaseSetup(): Promise<void> {
