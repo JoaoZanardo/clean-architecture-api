@@ -6,7 +6,7 @@ import env from "./env";
 
 export class Server {
     constructor(
-        private app: Application,
+        private _app: Application,
         private port: number = 3000
         ) { }
 
@@ -17,11 +17,11 @@ export class Server {
     }
 
     private setupRoutes(): void {
-        setupRoutes(this.app);
+        setupRoutes(this._app);
     }
 
     private setupApp(): void {
-        setupApp(this.app);
+        setupApp(this._app);
     }
 
     private async databaseSetup(): Promise<void> {
@@ -32,8 +32,12 @@ export class Server {
         await mongoHelper.disconnect();
     }
 
+    get app(): Application {
+        return this._app;
+    }
+
     start(): void {
-        this.app.listen(this.port, () => {
+        this._app.listen(this.port, () => {
             console.log(`Server running at port: ${this.port}`);
         });
     }
