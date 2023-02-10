@@ -33,7 +33,7 @@ export class Server {
         await mongoHelper.connect(env.mongoUrl);
     }
 
-    private async close(): Promise<void> {
+    async close(): Promise<void> {
         await mongoHelper.disconnect();
     }
 
