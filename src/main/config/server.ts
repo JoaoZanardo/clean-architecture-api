@@ -8,8 +8,8 @@ import { loginRoutes } from "../routes/login-routes";
 export class Server {
     constructor(
         private _app: Application,
-        private port: number = 3000
-        ) { }
+        private port: number
+    ) { }
 
     async init(): Promise<void> {
         this.setupApp();

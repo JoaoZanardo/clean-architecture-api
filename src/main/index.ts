@@ -1,7 +1,8 @@
 import Express from 'express';
+import env from './config/env';
 import { Server } from "./config/server";
 
-enum ExitStatus{
+enum ExitStatus {
     Success = 0,
     Failure = 1
 }
@@ -19,10 +20,10 @@ process.on('uncaughtException', (error) => {
 (async () => {
     try {
         const app = Express()
-        const server = new Server(app);
+        const server = new Server(app, env.port);
         await server.init();
         server.start();
-        
+
         const exitSignals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM', 'SIGQUIT'];
         exitSignals.map(sig => process.on(sig, async () => {
             try {
