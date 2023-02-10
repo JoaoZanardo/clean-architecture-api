@@ -1,5 +1,5 @@
 import { agent } from "supertest";
-import { fakeApp } from "../config/fake-app";
+import { fakeApp } from "../../config/_test_/fake-app";
 
 describe('CORS Middleware', () => {
     it('Should enable cors', async () => {

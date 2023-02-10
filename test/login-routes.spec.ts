@@ -1,6 +1,6 @@
 import { Collection, Document } from 'mongodb';
 import { agent } from 'supertest';
-import { fakeApp } from '../src/main/config/fake-app';
+import { fakeApp } from '../src/main/config/_test_/fake-app';
 import mongoHelper from '../src/infra/helpers/mongo-helper';
 import bcrypt from 'bcrypt';
 import env from '../src/main/config/env';
