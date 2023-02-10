@@ -1,13 +1,13 @@
-import mongoHelper from "../infra/helpers/mongo-helper";
-import app from "./config/app";
-import env from './config/env';
+import Express from 'express';
+import { Server } from "./config/server";
 
-mongoHelper.connect(env.mongoUrl)
-    .then(() => {
-        app.listen(3000, () => {
-            console.log('Server running');
-        });
-    })
-    .catch(e => {
-        console.log(e);
-    });
+(async () => {
+    try {
+        const app = Express()
+        const server = new Server(app);
+        await server.init();
+        server.start();
+    } catch (error) {
+        console.error(`App exited with error: ${error}`);
+    }
+})();

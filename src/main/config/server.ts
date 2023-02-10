@@ -14,7 +14,6 @@ export class Server {
         this.setupApp();
         this.setupRoutes();
         await this.databaseSetup();
-        this.start();
     }
 
     private setupRoutes(): void {
