@@ -9,7 +9,7 @@ Before showing you more about this api, i wanna thanks the [**Rodrigo Manguinho*
 > ## Routes
 
 1. [/signup](./documentation/sign-up.md)
-2. [/signup](./documentation/login.md)
+2. [/signin](./documentation/login.md)
 
 > ## Libraries
 
